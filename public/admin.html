@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Post an Event · FAC Screen</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--green:#0D1F17;--cream:#FAF7F2;--gold:#C9A84C;--gold-d:#A88A38;--ink:#1a1f1c;--muted:#5f665f;--rule:#e1dacb;--panel:#f1ece2;--ok:#2f7a48;--err:#b4432f;
+  --w:#F2EDE3;--w-dim:rgba(242,237,227,.62);--w-faint:rgba(242,237,227,.16);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--cream);color:var(--ink);font-size:15px;line-height:1.5;}
+.page{max-width:1180px;margin:0 auto;padding:24px 16px 64px;}
+@media(min-width:760px){.page{padding:32px 32px 72px;}}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;gap:12px;}
+.crest{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--gold);color:var(--gold-d);display:flex;align-items:center;justify-content:center;font:700 17px 'Cormorant Garamond',serif;flex-shrink:0;}
+.bn{font:600 21px/1.1 'Cormorant Garamond',serif;color:var(--green);}
+.eyebrow{font:500 10.5px 'DM Mono',monospace;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold-d);}
+.links{display:flex;gap:8px;flex-wrap:wrap;}
+.lnk{font:500 13px 'DM Sans',sans-serif;color:var(--green);text-decoration:none;border:1px solid var(--green);padding:8px 14px;border-radius:6px;}
+h1{font:600 36px/1.1 'Cormorant Garamond',serif;color:var(--green);margin:26px 0 4px;}
+.lede{color:var(--muted);max-width:640px;}
+.wrap{display:grid;grid-template-columns:1fr;gap:28px;margin-top:24px;}
+@media(min-width:960px){.wrap{grid-template-columns:minmax(0,1fr) 440px;align-items:start;}}
+
+/* form */
+form{background:#fff;border:1px solid var(--rule);border-radius:10px;padding:22px 20px;}
+@media(min-width:760px){form{padding:26px 28px;}}
+.f{margin-bottom:18px;}
+.row{display:grid;grid-template-columns:1fr;gap:14px;}
+@media(min-width:560px){.row.three{grid-template-columns:1.3fr 1fr 1fr;}.row.two{grid-template-columns:1.6fr 1fr;}}
+label,.lbl{display:block;font:600 13px 'DM Sans',sans-serif;color:var(--green);margin-bottom:6px;}
+.hint{font-weight:400;color:var(--muted);}
+input,textarea,select{width:100%;font:16px 'DM Sans',sans-serif;padding:12px 14px;border:1.5px solid var(--rule);border-radius:9px;background:#fff;color:var(--ink);outline:none;}
+input:focus,textarea:focus{border-color:var(--gold);}
+textarea{resize:vertical;min-height:84px;}
+.count{font:400 12px 'DM Mono',monospace;color:var(--muted);text-align:right;margin-top:4px;}
+.bad{border-color:var(--err)!important;}
+.seg{display:flex;flex-wrap:wrap;gap:8px;}
+.seg button{font:500 14px 'DM Sans',sans-serif;padding:9px 14px;border-radius:20px;border:1.5px solid var(--rule);background:#fff;color:var(--ink);cursor:pointer;}
+.seg button.on{background:var(--green);color:var(--cream);border-color:var(--green);}
+.sw{display:flex;gap:10px;}
+.sw button{width:46px;height:46px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px var(--rule);cursor:pointer;}
+.sw button.on{box-shadow:0 0 0 2.5px var(--gold);}
+.sw .green{background:linear-gradient(160deg,#1E4430,#0B1F15);}
+.sw .navy{background:linear-gradient(160deg,#1B3558,#0A1729);}
+.sw .clay{background:linear-gradient(160deg,#6E3A26,#2A1711);}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;}
+.btn{font:600 16px 'DM Sans',sans-serif;padding:14px 22px;border-radius:10px;border:0;background:var(--green);color:var(--cream);cursor:pointer;}
+.btn.ghost{background:transparent;color:var(--green);border:1.5px solid var(--green);}
+.err{color:var(--err);font-size:13.5px;margin-top:10px;min-height:1px;}
+.done{display:none;background:#eaf3ec;border:1px solid rgba(47,122,72,.35);border-radius:10px;padding:16px 18px;margin-bottom:18px;}
+.done.on{display:block;}
+.done b{color:var(--ok);}
+.done .actions{margin-top:10px;}
+.done .btn{font-size:14px;padding:10px 16px;}
+
+/* preview */
+.pv-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+.tvf{background:#0a0d0b;border-radius:10px;padding:8px;box-shadow:0 12px 28px rgba(13,31,23,.25);}
+.poster{position:relative;overflow:hidden;border-radius:5px;color:var(--w);padding:26px 24px 20px;min-height:430px;display:flex;flex-direction:column;}
+.poster[data-theme="green"]{background:radial-gradient(circle at 80% 15%,rgba(201,168,76,.28),transparent 45%),radial-gradient(circle at 10% 95%,rgba(90,168,110,.22),transparent 50%),linear-gradient(160deg,#1E4430,#0F2A1C 60%,#0B1F15);}
+.poster[data-theme="navy"]{background:radial-gradient(circle at 80% 15%,rgba(201,168,76,.24),transparent 45%),linear-gradient(160deg,#1B3558,#0E1F36 65%,#0A1729);}
+.poster[data-theme="clay"]{background:radial-gradient(circle at 80% 15%,rgba(242,237,227,.16),transparent 45%),linear-gradient(160deg,#6E3A26,#40231A 65%,#2A1711);}
+.poster::after{content:'';position:absolute;right:-60px;top:-50px;width:230px;height:230px;border-radius:50%;border:2px solid rgba(201,168,76,.2);}
+.p-eb{font:600 10px 'DM Sans',sans-serif;letter-spacing:3px;text-transform:uppercase;color:var(--gold);position:relative;}
+.p-t{font:600 44px/1 'Cormorant Garamond',serif;margin-top:12px;position:relative;word-wrap:break-word;}
+.p-when{font:500 13px 'DM Mono',monospace;color:var(--gold);margin-top:12px;position:relative;}
+.p-loc{font-size:14px;color:var(--w-dim);margin-top:3px;position:relative;}
+.p-d{font-size:14px;line-height:1.5;color:var(--w-dim);margin-top:12px;position:relative;}
+.p-foot{margin-top:auto;padding-top:18px;display:flex;justify-content:space-between;align-items:flex-end;gap:14px;position:relative;}
+.p-g{font:600 34px/1 'Cormorant Garamond',serif;}
+.p-g small{font:400 12px 'DM Sans',sans-serif;color:var(--w-dim);margin-left:5px;}
+.p-first{font-size:13px;color:var(--w-dim);margin-top:6px;}
+.p-first b{color:#6DC47F;}
+.p-left{font:500 11px 'DM Mono',monospace;color:var(--gold);margin-top:6px;}
+.qr{background:var(--cream);border-radius:8px;padding:9px 9px 6px;text-align:center;flex-shrink:0;}
+.qr svg{width:110px;height:110px;display:block;}
+.qr span{display:block;font:600 8px 'DM Mono',monospace;letter-spacing:1.6px;text-transform:uppercase;color:var(--green);margin-top:5px;}
+.pv-note{font-size:12.5px;color:var(--muted);margin-top:10px;}
+
+/* list */
+h2{font:600 26px 'Cormorant Garamond',serif;color:var(--green);margin:40px 0 10px;}
+.list{border:1px solid var(--rule);border-radius:10px;background:#fff;overflow:hidden;}
+.li{display:flex;align-items:center;gap:14px;padding:13px 16px;border-bottom:1px solid var(--rule);flex-wrap:wrap;}
+.li:last-child{border-bottom:0;}
+.chip{width:12px;height:36px;border-radius:3px;flex-shrink:0;}
+.chip.green{background:#1E4430;}.chip.navy{background:#1B3558;}.chip.clay{background:#6E3A26;}
+.li-m{flex:1;min-width:180px;}
+.li-t{font-weight:600;color:var(--green);}
+.li-s{font-size:13px;color:var(--muted);}
+.tag{font:500 10px 'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:3px;border:1px solid var(--rule);color:var(--muted);margin-left:6px;}
+.tag.new{color:var(--ok);border-color:rgba(47,122,72,.4);}
+.li-a{display:flex;gap:6px;}
+.mini{font:500 13px 'DM Sans',sans-serif;padding:7px 12px;border-radius:6px;border:1px solid var(--rule);background:#fff;color:var(--green);cursor:pointer;}
+.mini.rm{color:var(--err);}
+.foot{margin-top:40px;padding-top:14px;border-top:1px solid var(--rule);font-size:12.5px;color:var(--muted);}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>window.qrcode||document.write('<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="events.js"></script>
+<script src="promote.js"></script>
+</head>
+<body>
+<div class="page">
+  <div class="bar">
+    <div class="brand"><div class="crest" id="crest">B</div><div><div class="bn" id="bn">Ballantyne Country Club</div><div class="eyebrow">FAC Screen · Events</div></div></div>
+    <div class="links"><a class="lnk" href="index.html?mode=evening&demo=1" target="_blank">Open the screen</a><a class="lnk" href="staff.html">Sign-ups</a></div>
+  </div>
+
+  <h1>Post an event to the FAC screen</h1>
+  <p class="lede">Type in the details. The screen builds the graphic, adds a QR code to join, and shows who's in as members sign up.</p>
+
+  <div class="wrap">
+    <div>
+      <div class="done" id="done"><b id="doneT">Posted.</b> <span id="doneS">It's on the FAC screen now.</span>
+        <div class="actions"><a class="btn" href="index.html?mode=evening&demo=1" target="_blank" style="text-decoration:none">See it on the screen</a><button class="btn ghost" type="button" id="another">Add another</button></div>
+      </div>
+      <form id="f" novalidate>
+        <div class="f"><label for="title">Event name</label><input id="title" maxlength="40" placeholder="e.g. Pickleball Social" autocomplete="off"></div>
+        <div class="f"><span class="lbl">Type</span><div class="seg" id="cat"><button type="button" class="on">Racquet</button><button type="button">Clinic</button><button type="button">Social</button><button type="button">Junior</button></div></div>
+        <div class="row three">
+          <div class="f"><label for="date">Date</label><input id="date" type="date"></div>
+          <div class="f"><label for="start">Starts</label><input id="start" type="time" value="18:00" step="900"></div>
+          <div class="f"><label for="end">Ends</label><input id="end" type="time" value="20:00" step="900"></div>
+        </div>
+        <div class="row two">
+          <div class="f"><label for="loc">Where</label><input id="loc" list="locs" placeholder="e.g. Pickleball Courts 1–3" autocomplete="off">
+            <datalist id="locs"><option>Pickleball Courts 1–3</option><option>Pickleball Courts</option><option>Tennis Courts 1–4</option><option>Court 5</option><option>FAC Lounge</option></datalist></div>
+          <div class="f"><label for="cap">Spots <span class="hint">· 0 = no limit</span></label><input id="cap" type="number" min="0" max="500" value="12" inputmode="numeric"></div>
+        </div>
+        <div class="f"><label for="blurb">Short description <span class="hint">· optional</span></label><textarea id="blurb" maxlength="140" placeholder="One or two lines members will read on the screen."></textarea><div class="count" id="cnt">0 / 140</div></div>
+        <div class="f"><span class="lbl">Look</span><div class="sw" id="theme"><button type="button" class="green on" data-t="green" aria-label="Green"></button><button type="button" class="navy" data-t="navy" aria-label="Navy"></button><button type="button" class="clay" data-t="clay" aria-label="Clay"></button></div></div>
+        <div class="actions"><button class="btn" type="submit" id="go">Post to the FAC screen</button><button class="btn ghost" type="button" id="cancel" style="display:none">Cancel edit</button></div>
+        <div class="err" id="err"></div>
+      </form>
+    </div>
+
+    <div>
+      <div class="pv-h"><div class="eyebrow">Preview · as it appears on the screen</div></div>
+      <div class="tvf"><div class="poster" id="pv" data-theme="green"></div></div>
+      <p class="pv-note">The QR code opens the sign-up page for this event. Names appear on the screen as members join.</p>
+    </div>
+  </div>
+
+  <h2>On the FAC screen</h2>
+  <div class="list" id="list"></div>
+
+  <div class="foot">ClubOS · Clubhouse CTV · Demonstration build. Events posted here are kept in this browser and sent live to screens that are open.</div>
+</div>
+
+<script>
+const V=window.CLUBOS_VENUE, P=window.Promote, E=P.esc, $=id=>document.getElementById(id);
+$('crest').textContent=V.crest; $('bn').textContent=V.name;
+let cat='Racquet', theme='green', editing=null;
+
+function to12(t){if(!t)return'';let[h,m]=t.split(':').map(Number);const ap=h>=12?'PM':'AM';return (h%12||12)+':'+String(m).padStart(2,'0')+' '+ap;}
+function to24(t){const m=(t||'').match(/(\d{1,2}):(\d{2})\s*([AP]M)/i);if(!m)return'';let h=+m[1];const ap=m[3].toUpperCase();if(ap==='PM'&&h!==12)h+=12;if(ap==='AM'&&h===12)h=0;return String(h).padStart(2,'0')+':'+m[2];}
+function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function nextFriday(){const d=new Date();d.setDate(d.getDate()+((5-d.getDay()+7)%7||7));return iso(d);}
+function slug(s){return (s||'event').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,28)||'event';}
+$('date').value=nextFriday(); $('date').min=iso(new Date());
+
+function draft(){
+  const title=$('title').value.trim().replace(/\s+/g,' ');
+  return {
+    id: editing || (slug(title)+'-'+($('date').value||'').replace(/-/g,'').slice(4)),
+    title: title || 'Your event name',
+    category: cat, date: $('date').value || nextFriday(),
+    start: to12($('start').value), end: to12($('end').value),
+    location: $('loc').value.trim() || 'FAC',
+    blurb: $('blurb').value.trim(), cap: Math.max(0, parseInt($('cap').value,10)||0), theme,
+    custom: true
+  };
+}
+function preview(){
+  const ev=draft(), s=P.stats(P.eventById(ev.id)||ev);
+  const going=s.going;
+  $('pv').dataset.theme=ev.theme;
+  $('pv').innerHTML=`<div class="p-eb">${E(ev.category)} · ${E(P.relDay(ev))}</div>
+    <div class="p-t">${E(ev.title)}</div>
+    <div class="p-when">${E(P.fmtDay(ev,{weekday:'short',month:'short',day:'numeric'}))} · ${ev.start||'—'}${ev.end?' – '+ev.end:''}</div>
+    <div class="p-loc">${E(ev.location)}</div>
+    ${ev.blurb?`<div class="p-d">${E(ev.blurb)}</div>`:''}
+    <div class="p-foot"><div>
+      <div class="p-g">${going}<small>${ev.cap?'of '+ev.cap+' spots':'members in'}</small></div>
+      ${going?(ev.cap?`<div class="p-left">${Math.max(ev.cap-going,0)} spots left</div>`:''):`<div class="p-first"><b>Be the first to join.</b></div>`}
+    </div><div class="qr">${P.qrSvg(P.rsvpUrl(ev,'&src=tv'),4)}<span>Scan to join</span></div></div>`;
+  $('cnt').textContent=$('blurb').value.length+' / 140';
+}
+
+function validate(){
+  const bad=[];['title','date','start','end'].forEach(k=>$(k).classList.remove('bad'));
+  if(!$('title').value.trim()) bad.push(['title','Add an event name.']);
+  if(!$('date').value) bad.push(['date','Pick a date.']);
+  if(!$('start').value) bad.push(['start','Add a start time.']);
+  if(!$('end').value) bad.push(['end','Add an end time.']);
+  else if($('start').value && $('end').value<=$('start').value) bad.push(['end','The end time needs to be after the start time.']);
+  bad.forEach(b=>$(b[0]).classList.add('bad'));
+  $('err').textContent=bad.length?bad[0][1]:'';
+  if(bad.length) $(bad[0][0]).focus();
+  return !bad.length;
+}
+
+function resetForm(){
+  editing=null; $('f').reset(); $('date').value=nextFriday(); $('start').value='18:00'; $('end').value='20:00'; $('cap').value=12;
+  setCat('Racquet'); setTheme('green'); $('go').textContent='Post to the FAC screen'; $('cancel').style.display='none'; $('err').textContent='';
+  preview();
+}
+function setCat(c){cat=c;[...$('cat').children].forEach(b=>b.classList.toggle('on',b.textContent===c));}
+function setTheme(t){theme=t;[...$('theme').children].forEach(b=>b.classList.toggle('on',b.dataset.t===t));}
+
+$('cat').onclick=e=>{if(e.target.tagName==='BUTTON'){setCat(e.target.textContent);preview();}};
+$('theme').onclick=e=>{if(e.target.dataset.t){setTheme(e.target.dataset.t);preview();}};
+['title','date','start','end','loc','cap','blurb'].forEach(k=>$(k).addEventListener('input',()=>{$(k).classList.remove('bad');if($('err').textContent)$('err').textContent='';preview();}));
+
+$('f').onsubmit=e=>{
+  e.preventDefault();
+  if(!validate()) return;
+  const ev=draft(), wasEdit=!!editing;
+  P.upsertEvent(ev);
+  $('doneT').textContent=wasEdit?'Updated.':'Posted.';
+  $('doneS').textContent=`${ev.title} is on the FAC screen now.`;
+  $('done').classList.add('on');
+  resetForm(); renderList();
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+$('another').onclick=()=>{$('done').classList.remove('on');$('title').focus();};
+$('cancel').onclick=resetForm;
+
+function edit(id){
+  const ev=P.eventById(id); if(!ev) return;
+  editing=id; $('title').value=ev.title; $('date').value=ev.date; $('start').value=to24(ev.start); $('end').value=to24(ev.end);
+  $('loc').value=ev.location||''; $('cap').value=ev.cap||0; $('blurb').value=ev.blurb||'';
+  setCat(ev.category||'Racquet'); setTheme(ev.theme||'green');
+  $('go').textContent='Update on the FAC screen'; $('cancel').style.display=''; $('done').classList.remove('on');
+  preview(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function renderList(){
+  const evs=P.upcoming();
+  $('list').innerHTML=evs.map(ev=>{const s=P.stats(ev);
+    return `<div class="li"><div class="chip ${ev.theme||'green'}"></div><div class="li-m">
+      <div class="li-t">${E(ev.title)}${ev.custom?'<span class="tag new">Posted here</span>':'<span class="tag">Sample</span>'}</div>
+      <div class="li-s">${E(P.fmtDay(ev,{weekday:'short',month:'short',day:'numeric'}))} · ${ev.start} · ${E(ev.location)} · ${s.going}${ev.cap?' / '+ev.cap:''} in</div></div>
+      ${ev.custom?`<div class="li-a"><button class="mini" data-edit="${E(ev.id)}">Edit</button><button class="mini rm" data-rm="${E(ev.id)}">Remove</button></div>`:''}</div>`;}).join('');
+}
+$('list').onclick=e=>{
+  const ed=e.target.dataset.edit, rm=e.target.dataset.rm;
+  if(ed) edit(ed);
+  if(rm && confirm('Take this event off the FAC screen?')){P.deleteEvent(rm); if(editing===rm) resetForm(); renderList();}
+};
+P.onMessage(()=>{renderList();preview();});
+preview(); renderList();
+</script>
+</body>
+</html>

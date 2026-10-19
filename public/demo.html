@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promote Demo Links · Ballantyne</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'DM Sans',sans-serif;background:#FAF7F2;color:#1a1f1c;}
+.page{max-width:640px;margin:0 auto;padding:32px 16px 60px;}
+h1{font-family:'Cormorant Garamond',serif;font-size:36px;color:#0D1F17;margin:0 0 6px;}
+p{color:#5f665f;margin:0 0 20px;line-height:1.5;}
+.eb{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:#A88A38;margin:28px 0 8px;}
+a.l{display:block;background:#fff;border:1px solid #e1dacb;border-radius:10px;padding:14px 16px;margin-bottom:10px;text-decoration:none;color:#0D1F17;font-weight:600;}
+a.l span{display:block;font-weight:400;font-size:13.5px;color:#5f665f;margin-top:2px;}
+.btn{background:#0D1F17;color:#FAF7F2;border:0;padding:10px 16px;border-radius:6px;font:500 13px 'DM Sans',sans-serif;cursor:pointer;float:right;}
+@media print{.btn{display:none;}}
+</style>
+</head>
+<body>
+<div class="page">
+  <button class="btn" onclick="window.print()">Print / Save as PDF</button>
+  <h1>Promote demo</h1>
+  <p>Open the club screen on the laptop or TV, then scan its QR with your phone. Your name appears on the screen and in the staff view within a second or two.</p>
+
+  <div class="eb">Club screen (open full screen, 1920×1080)</div>
+  <a class="l" href="index.html?mode=evening&demo=1">After close <span>The fix for "Courts Closed": upcoming events with scan-to-RSVP</span></a>
+  <a class="l" href="index.html?mode=preopen&demo=1">6:50 AM <span>Countdown to opening plus today's featured event</span></a>
+  <a class="l" href="index.html?mode=day&demo=1">During the day <span>Court grid, with event spotlights between cycles</span></a>
+  <a class="l" href="index.html">Auto <span>Follows the clock, like a real install — no demo buttons</span></a>
+
+  <div class="eb">Member phone</div>
+  <a class="l" href="rsvp.html">All upcoming events <span>What a member sees after scanning</span></a>
+
+  <div class="eb">Club staff</div>
+  <a class="l" href="admin.html">Post an event <span>Type in the details; the screen builds the graphic and adds the QR</span></a>
+  <a class="l" href="staff.html">Who signs up, who shows up <span>RSVPs, early sign-ups, door check-ins, live activity</span></a>
+
+  <p style="margin-top:28px;font-size:13px">On the club screen, keys D / E / P / A switch views. Reset the live counts from the staff view before the meeting. Open the screen and the event page in the same browser so a new post appears instantly.</p>
+</div>
+</body>
+</html>

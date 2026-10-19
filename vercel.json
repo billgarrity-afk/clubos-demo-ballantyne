@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "public": true,
+  "outputDirectory": "public",
+  "toolbarSettings": { "toolbar": "hide" },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    }
+  ]
+}

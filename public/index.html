@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClubOS Promote · Ballantyne Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B1A12;--bg-mid:#0F2018;--bg-card:#142516;--bg-deep:#091510;
+  --green:#4A8C5C;--green-glow:#5aA86e;--green-dim:rgba(74,140,92,0.12);
+  --gold:#C9A84C;--gold-mid:#A88A38;--gold-dim:rgba(201,168,76,0.22);--gold-faint:rgba(201,168,76,0.07);
+  --white:#F2EDE3;--white-dim:rgba(242,237,227,0.58);--white-faint:rgba(242,237,227,0.14);
+  --cream:#FAF7F2;--sep:rgba(201,168,76,0.15);--blue:#5A8FC8;
+  --r:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);width:1920px;height:1080px;overflow:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 50%,rgba(74,140,92,0.06),transparent 55%),radial-gradient(ellipse at 85% 20%,rgba(201,168,76,0.04),transparent 50%);pointer-events:none;z-index:0;}
+.display{display:grid;grid-template-rows:88px 1fr 64px;height:1080px;width:1920px;position:relative;z-index:1;}
+
+/* ── HEADER ── */
+.hdr{background:var(--bg-mid);border-bottom:1px solid var(--sep);display:flex;align-items:center;justify-content:space-between;padding:0 52px;position:relative;z-index:20;}
+.hdr::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold-mid),var(--green-glow),var(--gold-mid),transparent);opacity:0.6;}
+.hdr-left{display:flex;align-items:center;gap:20px;}
+.crest{width:52px;height:52px;border:1.5px solid var(--gold-mid);border-radius:50%;background:var(--gold-faint);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--gold);}
+.cname{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--white);letter-spacing:0.5px;line-height:1;}
+.csub{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:500;margin-top:4px;}
+.hdr-mid{position:absolute;left:50%;transform:translateX(-50%);text-align:center;}
+.hlabel{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);font-weight:500;}
+.hdate{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--white);font-weight:500;letter-spacing:1px;margin-top:2px;}
+.hdr-right{display:flex;align-items:center;gap:32px;}
+.sync-b{text-align:right;}
+.sync-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--white-faint);}
+.sync-t{font-family:'DM Mono',monospace;font-size:13px;color:var(--green-glow);margin-top:2px;}
+.sync-health{display:flex;align-items:center;gap:8px;border-left:1px solid var(--sep);padding-left:28px;}
+.sync-health-dot{width:10px;height:10px;border-radius:50%;background:var(--green-glow);animation:np 1.4s ease-in-out infinite;}
+.sync-health-text{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--white-faint);}
+.clock-b{text-align:right;border-left:1px solid var(--sep);padding-left:28px;}
+.clock-t{font-family:'DM Mono',monospace;font-size:36px;color:var(--white);letter-spacing:2px;line-height:1;}
+.clock-s{font-size:12px;color:var(--white-dim);letter-spacing:1px;margin-top:3px;}
+
+/* ── FOOTER ── */
+.ftr{background:var(--bg-mid);border-top:1px solid var(--sep);display:flex;align-items:center;justify-content:space-between;padding:0 52px;position:relative;z-index:20;}
+.ftr-c{font-size:13px;color:var(--white-dim);letter-spacing:0.3px;}
+.pby{display:flex;align-items:center;gap:10px;}
+.pby-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(242,237,227,0.25);}
+.pby-wordmark{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--white);line-height:1;}
+.pby-wordmark .os{color:var(--gold);}
+
+/* ── BODY ── */
+.body-b{display:flex;flex-direction:column;overflow:hidden;height:100%;position:relative;}
+.view{position:absolute;inset:0;display:none;}
+.view.on{display:flex;flex-direction:column;animation:fi .5s ease both;}
+@keyframes fi{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes np{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* ── COURT GRID (day) ── */
+.grid-b{flex:1;overflow:hidden;padding:20px 48px 16px;display:grid;gap:16px;}
+.card-b{background:var(--bg-card);border:1px solid var(--sep);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;}
+.card-hdr-b{padding:18px 26px;border-bottom:1px solid var(--sep);background:rgba(201,168,76,0.06);display:flex;align-items:center;justify-content:space-between;}
+.card-nm-b{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--white);line-height:1;}
+.card-st-b{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 13px;border-radius:10px;white-space:nowrap;}
+.s-on{background:rgba(90,168,110,0.22);color:var(--green-glow);border:1px solid rgba(90,168,110,0.4);}
+.s-av{background:rgba(74,140,92,0.18);color:#6DC47F;border:1px solid rgba(74,140,92,0.4);}
+.s-bz{background:var(--gold-faint);color:var(--gold);border:1px solid var(--gold-dim);}
+.card-body-b{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:6px 0;}
+.slot-b{padding:11px 26px;display:flex;align-items:flex-start;gap:14px;border-bottom:1px solid rgba(242,237,227,0.05);}
+.slot-b:last-child{border-bottom:none;}
+.sd-b{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:7px;}
+.snm-b{font-size:18px;font-weight:500;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;line-height:1.2;}
+.stm-b{font-family:'DM Mono',monospace;font-size:14px;color:var(--white-dim);}
+.snm-b.now,.stm-b.now{color:var(--green-glow);}
+.avail-b{flex:1;display:flex;align-items:center;justify-content:center;color:#6DC47F;font-size:18px;font-weight:600;}
+.d-bk{background:var(--gold);box-shadow:0 0 5px var(--gold-mid);}
+.d-cl{background:var(--blue);}
+.d-nw{background:var(--green-glow);box-shadow:0 0 7px var(--green-glow);animation:np 1.4s ease-in-out infinite;}
+
+.tile{border-color:var(--gold-dim);background:linear-gradient(160deg,rgba(201,168,76,0.10),var(--bg-card) 55%);}
+.tile-b{flex:1;padding:22px 26px;display:flex;flex-direction:column;}
+.tile-t{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;line-height:1.05;}
+.tile-m{font-family:'DM Mono',monospace;font-size:14px;color:var(--gold);margin-top:10px;}
+.tile-row{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;}
+.tile-g{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:600;line-height:1;transition:color .4s;}
+.tile-g.bump{color:var(--gold);}
+.tile-g small{font-family:'DM Sans',sans-serif;font-size:16px;color:var(--white-dim);font-weight:400;}
+.tile-l{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold);margin-top:6px;}
+.tile-qr{width:150px;height:150px;background:var(--cream);border-radius:10px;padding:10px;}
+.tile-qr svg{width:100%;height:100%;display:block;}
+/* ── PROMOTE: shared pieces ── */
+.eyebrow{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);font-weight:600;}
+.qr-panel{background:var(--cream);border-radius:14px;padding:22px;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:0 10px 40px rgba(0,0,0,0.35);}
+.qr-panel .qr{width:260px;height:260px;}
+.qr-panel .qr svg{width:100%;height:100%;display:block;}
+.qr-panel .qr svg rect[fill="#ffffff"],.qr-panel .qr svg path[fill="#ffffff"]{fill:var(--cream);}
+.qr-lbl{font-family:'DM Mono',monospace;font-size:14px;letter-spacing:3px;text-transform:uppercase;color:#0D1F17;font-weight:500;}
+.qr-sub{font-size:13px;color:#5f665f;margin-top:-8px;}
+.cap{margin-top:30px;}
+.cap-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+.cap-going{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:600;color:var(--white);line-height:1;transition:color .4s;}
+.cap-going.bump{color:var(--gold);}
+.cap-going small{font-family:'DM Sans',sans-serif;font-size:18px;color:var(--white-dim);font-weight:400;margin-left:8px;}
+.cap-left{font-family:'DM Mono',monospace;font-size:15px;color:var(--gold);letter-spacing:1px;}
+.cap-bar{height:8px;border-radius:4px;background:var(--white-faint);overflow:hidden;}
+.cap-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:4px;transition:width .8s ease;}
+.who{display:flex;align-items:center;gap:14px;margin-top:26px;}
+.avs{display:flex;}
+.av{width:44px;height:44px;border-radius:50%;background:var(--bg-deep);border:2px solid var(--gold-mid);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:14px;color:var(--gold);margin-left:-10px;}
+.av:first-child{margin-left:0;}
+.av.new{border-color:var(--green-glow);color:var(--green-glow);animation:pop .6s ease;}
+@keyframes pop{0%{transform:scale(.4);}70%{transform:scale(1.15);}100%{transform:scale(1);}}
+.who-txt{font-size:18px;color:var(--white-dim);}
+.who-txt b{color:var(--white);font-weight:500;}
+
+/* ── GENERATED GRAPHIC COLOURWAYS (event.theme) ── */
+.feat[data-theme="navy"],.spot[data-theme="navy"]{background:radial-gradient(circle at 80% 15%,rgba(201,168,76,.22),transparent 45%),linear-gradient(160deg,#1B3558,#0E1F36 65%,#0A1729);}
+.feat[data-theme="clay"],.spot[data-theme="clay"]{background:radial-gradient(circle at 80% 15%,rgba(242,237,227,.14),transparent 45%),linear-gradient(160deg,#6E3A26,#40231A 65%,#2A1711);}
+.feat[data-theme="green"],.spot[data-theme="green"]{background:radial-gradient(circle at 80% 15%,rgba(201,168,76,.22),transparent 45%),radial-gradient(circle at 10% 95%,rgba(90,168,110,.20),transparent 50%),linear-gradient(160deg,#1E4430,#0F2A1C 60%,#0B1F15);}
+.feat[data-theme]::after{content:'';position:absolute;right:-70px;top:-60px;width:320px;height:320px;border-radius:50%;border:2px solid rgba(201,168,76,.18);pointer-events:none;}
+.feat[data-theme]{border-color:rgba(201,168,76,.32);}
+.spot[data-theme]::before{display:none;}
+.first{font-size:18px;color:var(--white-dim);margin-top:26px;}
+.first b{color:var(--green-glow);font-weight:600;}
+
+/* ── PROMOTE: evening board ── */
+.closed-strip{margin:20px 48px 0;padding:14px 26px;border:1px solid var(--sep);border-radius:var(--r);background:var(--bg-mid);display:flex;align-items:center;justify-content:space-between;font-size:16px;color:var(--white-dim);}
+.closed-strip b{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--white);font-weight:600;margin-right:16px;}
+.closed-strip .mono{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
+.board{flex:1;display:grid;grid-template-columns:1.55fr 1fr;gap:20px;padding:20px 48px 20px;min-height:0;}
+.feat{background:var(--bg-card);border:1px solid var(--sep);border-radius:var(--r);padding:48px 52px;display:grid;grid-template-columns:1fr 304px;gap:48px;align-items:center;position:relative;overflow:hidden;}
+.feat::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 30%,rgba(201,168,76,0.07),transparent 60%);pointer-events:none;}
+.feat-main{position:relative;animation:fi .6s ease both;}
+.feat-when{font-family:'DM Mono',monospace;font-size:17px;color:var(--gold);letter-spacing:1.5px;margin-top:22px;}
+.feat-title{font-family:'Cormorant Garamond',serif;font-size:80px;font-weight:600;line-height:1.02;margin-top:14px;color:var(--white);}
+.feat-loc{font-size:20px;color:var(--white-dim);margin-top:12px;}
+.feat-blurb{font-size:21px;color:var(--white-dim);line-height:1.55;margin-top:20px;max-width:640px;}
+.list{display:flex;flex-direction:column;gap:14px;min-height:0;}
+.list-h{padding:4px 4px 2px;}
+.li{flex:1;background:var(--bg-card);border:1px solid var(--sep);border-radius:var(--r);padding:22px 28px;display:flex;flex-direction:column;justify-content:center;transition:border-color .4s, background .4s;}
+.li.hot{border-color:var(--green-glow);background:rgba(90,168,110,0.08);}
+.li-when{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;}
+.li-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;margin-top:6px;line-height:1.1;}
+.li-meta{display:flex;justify-content:space-between;margin-top:10px;font-size:15px;color:var(--white-dim);}
+.li-meta .g{color:var(--white);font-weight:500;}
+.li-meta .l{font-family:'DM Mono',monospace;color:var(--gold);}
+.feat-dots{position:absolute;bottom:22px;left:52px;display:flex;gap:8px;}
+.fd{width:8px;height:8px;border-radius:4px;background:var(--white-faint);transition:all .35s;}
+.fd.on{width:24px;background:var(--gold);}
+
+/* ── PROMOTE: pre-open ── */
+.pre{flex:1;display:grid;grid-template-columns:1fr 1.25fr;gap:20px;padding:20px 48px;}
+.pre-l{background:var(--bg-card);border:1px solid var(--sep);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px;}
+.pre-big{font-family:'Cormorant Garamond',serif;font-size:96px;font-weight:600;line-height:1;margin-top:22px;}
+.pre-count{font-family:'DM Mono',monospace;font-size:64px;color:var(--gold);letter-spacing:4px;margin-top:28px;}
+.pre-cap{font-size:15px;letter-spacing:3px;text-transform:uppercase;color:var(--white-dim);margin-top:10px;}
+.pre-first{margin-top:44px;width:100%;max-width:520px;text-align:left;border-top:1px solid var(--sep);padding-top:24px;}
+.pre-first .row{display:flex;justify-content:space-between;padding:10px 0;font-size:19px;border-bottom:1px solid rgba(242,237,227,0.05);}
+.pre-first .row span:last-child{font-family:'DM Mono',monospace;font-size:15px;color:var(--white-dim);}
+.pre .feat{grid-template-columns:1fr 280px;gap:36px;padding:44px;}
+.pre .feat-title{font-size:64px;}
+.pre .qr-panel .qr{width:236px;height:236px;}
+
+/* ── PROMOTE: day spotlight overlay ── */
+.spot{position:absolute;inset:0;z-index:30;background:var(--bg);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .9s ease;}
+.spot.visible{opacity:1;}
+.spot::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(74,140,92,0.10),transparent 65%),radial-gradient(ellipse at 80% 80%,rgba(201,168,76,0.06),transparent 50%);}
+.spot-in{position:relative;display:grid;grid-template-columns:1fr 340px;gap:80px;align-items:center;width:1500px;}
+.spot .feat-title{font-size:96px;}
+.spot .qr-panel .qr{width:296px;height:296px;}
+
+/* ── TOAST ── */
+.toast{position:absolute;top:18px;right:48px;z-index:50;background:var(--bg-mid);border:1px solid var(--green-glow);border-radius:12px;padding:16px 22px;display:flex;align-items:center;gap:14px;box-shadow:0 10px 40px rgba(0,0,0,0.45);transform:translateY(-140%);opacity:0;transition:all .6s cubic-bezier(.2,.9,.3,1.2);}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast .av{margin:0;border-color:var(--green-glow);color:var(--green-glow);}
+.toast-t{font-size:18px;color:var(--white);}
+.toast-s{font-size:14px;color:var(--white-dim);margin-top:3px;}
+
+/* ── DEMO CONTROLS (only with ?demo=1) ── */
+.demo-ctl{position:absolute;left:16px;bottom:76px;z-index:60;display:none;gap:8px;}
+.demo-ctl.on{display:flex;}
+.demo-ctl button{font:500 12px 'DM Mono',monospace;letter-spacing:2px;text-transform:uppercase;padding:8px 14px;border-radius:6px;border:1px solid var(--gold-dim);background:rgba(9,21,16,0.85);color:var(--white-dim);cursor:pointer;}
+.demo-ctl button.on{color:var(--bg);background:var(--gold);border-color:var(--gold);}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>window.qrcode||document.write('<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="events.js"></script>
+<script src="promote.js"></script>
+</head>
+<body>
+
+<div class="display">
+  <header class="hdr">
+    <div class="hdr-left">
+      <div class="crest" id="crest">B</div>
+      <div><div class="cname" id="cname">Ballantyne Country Club</div><div class="csub" id="csub">Racquet Complex · Court Availability</div></div>
+    </div>
+    <div class="hdr-mid">
+      <div class="hlabel" id="hlabel">Today's Schedule</div>
+      <div class="hdate" id="hdate">—</div>
+    </div>
+    <div class="hdr-right">
+      <div class="sync-b"><div class="sync-lbl">Last Sync</div><div class="sync-t" id="synct">—</div></div>
+      <div class="sync-health"><div class="sync-health-dot"></div><div class="sync-health-text">Live</div></div>
+      <div class="clock-b"><div class="clock-t" id="clkt">12:00</div><div class="clock-s" id="clks">PM</div></div>
+    </div>
+  </header>
+
+  <div class="body-b" id="bodyEl">
+    <!-- DAY: court grid + spotlight overlay -->
+    <div class="view" id="vDay">
+      <div class="grid-b" id="gridB"></div>
+      <div class="spot" id="spot"></div>
+    </div>
+    <!-- EVENING: closed strip + event board -->
+    <div class="view" id="vEve">
+      <div class="closed-strip">
+        <div><b>Courts closed for the evening</b>Open tomorrow at <span id="openAt">7:00 AM</span> · Reserve via the BCC App or Pro Shop</div>
+        <div class="mono">Coming up at the club</div>
+      </div>
+      <div class="board">
+        <div class="feat" id="eveFeat"></div>
+        <div class="list">
+          <div class="list-h eyebrow">Also coming up</div>
+          <div id="eveList" style="display:flex;flex-direction:column;gap:14px;flex:1;min-height:0;"></div>
+        </div>
+      </div>
+    </div>
+    <!-- PRE-OPEN: countdown + today's featured event -->
+    <div class="view" id="vPre">
+      <div class="pre">
+        <div class="pre-l">
+          <div class="eyebrow">Good morning</div>
+          <div class="pre-big">Courts open<br>at 7:00</div>
+          <div class="pre-count" id="preCount">—</div>
+          <div class="pre-cap">Today's reservations go live at opening</div>
+          <div class="pre-first" id="preFirst"></div>
+        </div>
+        <div class="feat" id="preFeat"></div>
+      </div>
+    </div>
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <footer class="ftr">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:6px;height:6px;border-radius:50%;background:var(--green-glow);animation:np 1.4s ease-in-out infinite;"></div>
+      <span class="ftr-c" id="ftrMsg">Court availability syncs live · Scan any event to RSVP — no app needed</span>
+    </div>
+    <div class="pby">
+      <div class="pby-label">Powered by</div>
+      <svg width="18" height="16" viewBox="0 0 200 180" fill="none" style="opacity:0.5;">
+        <path d="M100 160 A88 88 0 0 1 188 72" stroke="#C9A84C" stroke-width="14" stroke-linecap="round" fill="none" opacity="0.3"/>
+        <path d="M100 160 A56 56 0 0 1 156 104" stroke="#C9A84C" stroke-width="14" stroke-linecap="round" fill="none" opacity="0.6"/>
+        <path d="M100 160 A28 28 0 0 1 128 132" stroke="#C9A84C" stroke-width="14" stroke-linecap="round" fill="none" opacity="1"/>
+        <circle cx="100" cy="160" r="10" fill="#C9A84C"/>
+      </svg>
+      <div class="pby-wordmark">Club<span class="os">OS</span></div>
+    </div>
+  </footer>
+
+  <div class="demo-ctl" id="demoCtl">
+    <button data-m="day">Day</button><button data-m="evening">Evening</button><button data-m="preopen">6:50 AM</button><button data-m="auto">Auto</button>
+  </div>
+</div>
+
+<script>
+const V = window.CLUBOS_VENUE, P = window.Promote;
+const params = new URLSearchParams(location.search);
+let forcedMode = params.get('mode');           // day | evening | preopen | null(auto)
+let mode = null, featIdx = 0, featTimer = null, cycleTimer = null;
+document.getElementById('cname').textContent = V.name;
+document.getElementById('crest').textContent = V.crest;
+document.getElementById('openAt').textContent = fmtHour(V.openHour);
+
+// ── TIME ──────────────────────────────────────────────────
+function fmtHour(h){return (h%12||12)+':00 '+(h>=12?'PM':'AM');}
+function fmtMin(m){m=((m%1440)+1440)%1440;const h=Math.floor(m/60),mm=String(m%60).padStart(2,'0');return (h%12||12)+':'+mm+' '+(h>=12?'PM':'AM');}
+function to24(t){const m=(t||'').match(/(\d{1,2}):(\d{2})\s*([AP]M)/i);if(!m)return -1;let h=+m[1];const ap=m[3].toUpperCase();if(ap==='PM'&&h!==12)h+=12;if(ap==='AM'&&h===12)h=0;return h*60+(+m[2]);}
+function nowMin(){const n=new Date();return n.getHours()*60+n.getMinutes();}
+function autoMode(){const h=new Date().getHours();if(h>=V.closeHour||h<6)return 'evening';if(h<V.openHour)return 'preopen';return 'day';}
+
+// Header date follows the view. Fixes the live display bug where the
+// 1-second clock tick overwrote the "tomorrow" date with today's date.
+// Demo clock: a forced view shows the time it's meant to represent
+// (9:40 PM for evening, 6:50 AM for pre-open), then runs forward.
+let simBase=null, simStart=0;
+function setSim(m){
+  simStart=Date.now();
+  if(m==='evening'){simBase=new Date();simBase.setHours(21,40,0,0);}
+  else if(m==='preopen'){simBase=new Date();simBase.setHours(V.openHour-1,50,0,0);}
+  else simBase=null;
+}
+function clockNow(){return simBase?new Date(simBase.getTime()+(Date.now()-simStart)):new Date();}
+function headerDate(){
+  const n=clockNow();
+  if(mode==='evening' && n.getHours()>=12){const t=new Date(n);t.setDate(t.getDate()+1);return t;}
+  return n;
+}
+function tick(){
+  const n=clockNow();
+  document.getElementById('clkt').textContent=(n.getHours()%12||12)+':'+String(n.getMinutes()).padStart(2,'0');
+  document.getElementById('clks').textContent=(n.getHours()>=12?'PM':'AM')+' · '+n.toLocaleDateString('en-US',{weekday:'long'});
+  document.getElementById('hdate').textContent=headerDate().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  if(mode==='preopen') updateCountdown();
+}
+
+// ── SEEDED COURTS (demo data — no booking-system call, no member names) ──
+const COURTS=[
+  ...[1,2,3,4,5].map(n=>({name:'Court '+n,sport:'tennis'})),
+  ...[1,2,3,4].map(n=>({name:'Pickleball '+n,sport:'pickleball'}))
+];
+const LABELS=['Reserved','Reserved','Ladies Doubles','Private Lesson','Reserved','Junior Academy','Open Play','Reserved',"Women's 3.5 Clinic"];
+function seedBookings(){
+  let base=Math.floor(nowMin()/30)*30-30;
+  if(base<V.openHour*60) base=V.openHour*60;
+  if(base>(V.closeHour-3)*60) base=(V.closeHour-3)*60;
+  return COURTS.map((c,i)=>{
+    const out=[];let t=base+(i%3)*30-(i%2?30:0);
+    const n=[3,2,4,1,3,0,2,3,2][i];
+    for(let k=0;k<n;k++){
+      const len=[60,90,60,90][(i+k)%4];
+      const lbl=LABELS[(i*2+k)%LABELS.length];
+      out.push({label:lbl,type:/Clinic|Academy|Open Play/.test(lbl)?'clinic':'booked',startTime:fmtMin(t),endTime:fmtMin(t+len)});
+      t+=len+((i+k)%2?30:0);
+    }
+    return {...c,bookings:out};
+  });
+}
+function renderCourts(){
+  const courts=seedBookings(), nm=nowMin(), grid=document.getElementById('gridB');
+  const cols=courts.length<=5?courts.length:Math.ceil(courts.length/2);
+  grid.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  grid.innerHTML=courts.map(court=>{
+    const rel=court.bookings.filter(b=>to24(b.endTime)>nm).slice(0,4);
+    const isNow=b=>to24(b.startTime)<=nm&&nm<to24(b.endTime);
+    const hasNow=rel.some(isNow);
+    const sc=hasNow?'s-on':rel.length?'s-bz':'s-av', sl=hasNow?'On Court':rel.length?rel.length+' Booked':'Available';
+    const body=rel.length?rel.map(b=>{const now=isNow(b);const dc=now?'d-nw':b.type==='clinic'?'d-cl':'d-bk';
+      return `<div class="slot-b"><div class="sd-b ${dc}"></div><div><div class="snm-b ${now?'now':''}">${P.esc(b.label)}</div><div class="stm-b ${now?'now':''}">${b.startTime} – ${b.endTime}</div></div></div>`;}).join('')
+      :`<div class="avail-b">✦ &nbsp;Available Now</div>`;
+    return `<div class="card-b"><div class="card-hdr-b"><div class="card-nm-b">${court.name}</div><span class="card-st-b ${sc}">${sl}</span></div><div class="card-body-b">${body}</div></div>`;
+  }).join('')+(courts.length%cols?promoTile():'');
+  document.getElementById('synct').textContent=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+}
+
+// Spare grid cell becomes a live event tile (rotates each refresh)
+let tileIdx=0;
+function promoTile(){
+  const list=P.upcoming(), ev=list[tileIdx++%list.length], s=P.stats(ev);
+  return `<div class="card-b tile"><div class="card-hdr-b"><div class="card-nm-b" style="font-size:26px">Up next</div><span class="card-st-b s-bz">${P.esc(P.relDay(ev))}</span></div>
+    <div class="tile-b"><div class="tile-t">${P.esc(ev.title)}</div><div class="tile-m">${ev.start} · ${P.esc(ev.location)}</div>
+    <div class="tile-row"><div><div class="tile-g" data-going="${ev.id}">${s.going}<small> going</small></div>${ev.cap?`<div class="tile-l">${s.full?'Waitlist':s.spotsLeft+' spots left'}</div>`:''}</div>
+    <div class="tile-qr">${P.qrSvg(P.rsvpUrl(ev,'&src=tv'),4)}</div></div></div></div>`;
+}
+
+// ── PROMOTE BUILDING BLOCKS ───────────────────────────────
+function capHtml(ev,s){
+  const going=`<div class="cap-going" data-going="${ev.id}">${s.going}<small>${ev.cap?'of '+ev.cap+' spots':'members going'}</small></div>`;
+  const left=ev.cap?(s.full?'Waitlist open':s.spotsLeft+(s.spotsLeft===1?' spot':' spots')+' left'):'';
+  return `<div class="cap"><div class="cap-row">${going}<div class="cap-left">${left}</div></div>${ev.cap?`<div class="cap-bar"><div class="cap-fill" style="width:${Math.round(s.pct*100)}%"></div></div>`:''}</div>`;
+}
+function whoHtml(ev,s,newName){
+  if(!s.going) return `<div class="first"><b>Be the first to join.</b> Scan the code and your name goes up here.</div>`;
+  const shown=s.who.slice(0,5), others=Math.max(s.going-shown.length,0);
+  return `<div class="who"><div class="avs">${shown.map(n=>`<div class="av ${n===newName?'new':''}">${P.initials(n)}</div>`).join('')}</div>
+    <div class="who-txt"><b>${P.esc(shown[0]||'')}</b>${shown[1]?', <b>'+P.esc(shown[1])+'</b>':''}${others?' and '+others+' others':''} are in</div></div>`;
+}
+function qrHtml(ev,sub){
+  return `<div class="qr-panel"><div class="qr">${P.qrSvg(P.rsvpUrl(ev,'&src=tv'),8)}</div><div class="qr-lbl">Scan to RSVP</div><div class="qr-sub">${sub||'No app needed · takes 10 seconds'}</div></div>`;
+}
+function featHtml(ev,newName){
+  const s=P.stats(ev);
+  return `<div class="feat-main">
+      <div class="eyebrow">${P.esc(ev.category)} · ${P.esc(P.relDay(ev))}</div>
+      <div class="feat-title">${P.esc(ev.title)}</div>
+      <div class="feat-when">${P.esc(P.fmtDay(ev))} · ${ev.start} – ${ev.end}</div>
+      <div class="feat-loc">${P.esc(ev.location)}</div>
+      <div class="feat-blurb">${P.esc(ev.blurb)}</div>
+      ${capHtml(ev,s)}${whoHtml(ev,s,newName)}
+    </div>${qrHtml(ev)}`;
+}
+
+// ── EVENING BOARD ─────────────────────────────────────────
+function renderEvening(newName,hotId){
+  const list=P.upcoming();
+  const ev=list[featIdx%list.length];
+  document.getElementById('eveFeat').dataset.theme=ev.theme||'green';
+  document.getElementById('eveFeat').innerHTML=featHtml(ev,newName)+
+    (list.length>1?`<div class="feat-dots">${list.map((_,i)=>`<div class="fd ${i===featIdx%list.length?'on':''}"></div>`).join('')}</div>`:'');
+  const rest=list.filter(e=>e.id!==ev.id).slice(0,3);
+  document.getElementById('eveList').innerHTML=rest.map(e=>{const s=P.stats(e);
+    return `<div class="li ${e.id===hotId?'hot':''}"><div class="li-when">${P.esc(P.relDay(e))} · ${e.start}</div><div class="li-title">${P.esc(e.title)}</div>
+      <div class="li-meta"><span><span class="g">${s.going} going</span> · ${P.esc(e.location)}</span><span class="l">${e.cap?(s.full?'Waitlist':s.spotsLeft+' left'):''}</span></div></div>`;}).join('');
+}
+
+// ── PRE-OPEN ──────────────────────────────────────────────
+function updateCountdown(){
+  const n=clockNow(), open=new Date(n); open.setHours(V.openHour,0,0,0);
+  const ms=Math.max(open-n,0);
+  const m=Math.floor(ms/60000), s=Math.floor(ms%60000/1000);
+  document.getElementById('preCount').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+function renderPre(newName){
+  const list=P.upcoming(), ev=list[0];
+  document.getElementById('preFeat').dataset.theme=ev.theme||'green';
+  document.getElementById('preFeat').innerHTML=featHtml(ev,newName);
+  document.getElementById('preFirst').innerHTML=`<div class="eyebrow" style="margin-bottom:10px">Also today</div>`+
+    [['Early Bird Drills · Court 5','7:30 AM'],['Junior Academy · Courts 1–2','8:00 AM'],['Open Play · Pickleball','9:00 AM']]
+    .map(r=>`<div class="row"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('');
+  updateCountdown();
+}
+
+// ── DAY SPOTLIGHT CYCLE ───────────────────────────────────
+const COURTS_HOLD=24000, SPOT_HOLD=12000;
+let spotIdx=0;
+function startDayCycle(){clearTimeout(cycleTimer);cycleTimer=setTimeout(showSpot,COURTS_HOLD);}
+function spotList(){
+  const up=P.upcoming(), top=up.slice(0,3);
+  const fresh=P.customEvents().map(c=>up.find(e=>e.id===c.id)).filter(Boolean).reverse();
+  fresh.forEach(e=>{if(!top.includes(e)){top.unshift(e);top.length=Math.min(top.length,3);}});
+  return top;
+}
+function showSpot(newName){
+  const list=spotList(), spot=document.getElementById('spot');
+  const ev=list[spotIdx%list.length];
+  spot.dataset.theme=ev.theme||'green';
+  spot.innerHTML=`<div class="spot-in">${featHtml(ev,newName)}</div>`;
+  spot.classList.add('visible');
+  clearTimeout(cycleTimer);
+  cycleTimer=setTimeout(()=>{
+    spotIdx++;
+    if(spotIdx%list.length===0){spot.classList.remove('visible');renderCourts();startDayCycle();}
+    else showSpot();
+  },SPOT_HOLD);
+}
+
+// ── MODE SWITCHING ────────────────────────────────────────
+function setMode(m){
+  mode=m; setSim(forcedMode?m:null);
+  clearTimeout(cycleTimer);clearInterval(featTimer);
+  ['vDay','vEve','vPre'].forEach(id=>document.getElementById(id).classList.remove('on'));
+  const csub=document.getElementById('csub'), hl=document.getElementById('hlabel'), ft=document.getElementById('ftrMsg');
+  if(m==='day'){
+    csub.textContent='Racquet Complex · Court Availability'; hl.textContent="Today's Schedule";
+    ft.textContent='Court availability syncs live · Scan any event to RSVP — no app needed';
+    document.getElementById('spot').classList.remove('visible');
+    renderCourts(); document.getElementById('vDay').classList.add('on'); startDayCycle();
+  } else if(m==='evening'){
+    csub.textContent='Racquet Complex · Closed for the Evening'; hl.textContent=clockNow().getHours()>=12?"Tomorrow":"Today";
+    ft.textContent='Courts reopen at '+fmtHour(V.openHour)+' · Scan to RSVP for upcoming club events';
+    document.getElementById('synct').textContent='Closed';
+    featIdx=0; renderEvening(); document.getElementById('vEve').classList.add('on');
+    featTimer=setInterval(()=>{featIdx++;renderEvening();},15000);
+  } else {
+    csub.textContent='Racquet Complex · Opening Soon'; hl.textContent="Today";
+    ft.textContent='Today\'s reservations appear at '+fmtHour(V.openHour)+' · Scan to RSVP — no app needed';
+    document.getElementById('synct').textContent='Opens '+fmtHour(V.openHour);
+    renderPre(); document.getElementById('vPre').classList.add('on');
+  }
+  document.querySelectorAll('.demo-ctl button').forEach(b=>b.classList.toggle('on',b.dataset.m===(forcedMode||'auto')));
+  tick();
+}
+
+// ── LIVE RSVP / CHECK-IN ──────────────────────────────────
+let toastTimer=null;
+function featureEvent(id,name){
+  if(mode==='evening'){const list=P.upcoming();const i=list.findIndex(e=>e.id===id);if(i>=0)featIdx=i;renderEvening(name);clearInterval(featTimer);featTimer=setInterval(()=>{featIdx++;renderEvening();},15000);}
+  else if(mode==='preopen'){renderPre(name);}
+  else{const list=spotList();const i=list.findIndex(e=>e.id===id);if(i>=0){spotIdx=i;showSpot(name);}else{renderCourts();}}
+}
+function showToast(html){const t=document.getElementById('toast');t.innerHTML=html;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),6000);}
+P.onMessage(msg=>{
+  if(msg.type==='reset'){setMode(mode);return;}
+  if(msg.type==='event_delete'){setMode(mode);return;}
+  if(msg.type==='event_upsert'){
+    const e=P.eventById(msg.eventId); if(!e) return;
+    // A just-posted event jumps to the front of the rotation
+    featureEvent(e.id);
+    showToast(`<div class="av">✦</div><div><div class="toast-t"><b>New event posted</b> · ${P.esc(e.title)}</div><div class="toast-s">${P.esc(P.relDay(e))} · ${e.start} · scan to join</div></div>`);
+    return;
+  }
+  const ev=P.eventById(msg.eventId); if(!ev) return;
+  const s=P.stats(ev), name=msg.name||'A member';
+  const t=document.getElementById('toast');
+  t.innerHTML=`<div class="av">${P.initials(name)}</div><div><div class="toast-t"><b>${P.esc(name)}</b> ${msg.type==='checkin'?'just checked in to':'is in for'} ${P.esc(ev.title)}</div>
+    <div class="toast-s">${msg.type==='checkin'?s.checkedIn+' checked in':s.going+' going'}${ev.cap&&msg.type==='rsvp'?' · '+(s.full?'now full':s.spotsLeft+' spots left'):''}</div></div>`;
+  t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),6000);
+  if(msg.type!=='rsvp') return;
+  // Bring the event that just got the RSVP onto the screen
+  if(mode==='evening'){const list=P.upcoming();const i=list.findIndex(e=>e.id===ev.id);if(i>=0)featIdx=i;renderEvening(name);clearInterval(featTimer);featTimer=setInterval(()=>{featIdx++;renderEvening();},15000);}
+  else if(mode==='preopen'){renderPre(name);}
+  else{const list=spotList();const i=list.findIndex(e=>e.id===ev.id);if(i>=0){spotIdx=i;showSpot(name);}}
+  document.querySelectorAll(`[data-going="${ev.id}"]`).forEach(el=>{el.classList.add('bump');setTimeout(()=>el.classList.remove('bump'),1600);});
+});
+
+// ── DEMO CONTROLS ─────────────────────────────────────────
+if(params.get('demo')==='1') document.getElementById('demoCtl').classList.add('on');
+function pick(m){forcedMode=m==='auto'?null:m;setMode(forcedMode||autoMode());}
+document.querySelectorAll('.demo-ctl button').forEach(b=>b.onclick=()=>pick(b.dataset.m));
+document.addEventListener('keydown',e=>{const k={d:'day',e:'evening',p:'preopen',a:'auto'}[e.key.toLowerCase()];if(k)pick(k);});
+
+setMode(forcedMode||autoMode());
+setInterval(tick,1000);
+// Re-check the clock each minute: auto mode follows the venue's hours
+setInterval(()=>{if(!forcedMode&&autoMode()!==mode)setMode(autoMode());else if(mode==='day'&&!document.getElementById('spot').classList.contains('visible'))renderCourts();},60000);
+</script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Engagement · Ballantyne Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--green:#0D1F17;--cream:#FAF7F2;--gold:#C9A84C;--gold-d:#A88A38;--ink:#1a1f1c;--muted:#5f665f;--rule:#e1dacb;--panel:#f1ece2;--ok:#2f7a48;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--cream);color:var(--ink);font-size:15px;line-height:1.5;}
+.page{max-width:1180px;margin:0 auto;padding:28px 16px 64px;}
+@media(min-width:700px){.page{padding:36px 32px 72px;}}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;gap:12px;}
+.crest{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--gold);color:var(--gold-d);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:18px;}
+.bn{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--green);line-height:1.1;}
+.eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold-d);}
+.btns{display:flex;gap:8px;}
+.btn{background:var(--green);color:var(--cream);border:0;padding:10px 16px;border-radius:6px;font:500 13px 'DM Sans',sans-serif;cursor:pointer;}
+.btn.ghost{background:transparent;color:var(--green);border:1px solid var(--green);}
+h1{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:600;color:var(--green);line-height:1.1;margin:30px 0 6px;}
+.lede{color:var(--muted);max-width:720px;}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:24px 0 8px;}
+.kpi{background:var(--green);color:var(--cream);border-radius:8px;padding:16px 18px;}
+.kpi b{display:block;font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;color:var(--gold);line-height:1;}
+.kpi span{font-size:13px;color:#cfd6cf;}
+h2{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--green);margin:36px 0 10px;}
+.tbl{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:#fff;}
+table{width:100%;border-collapse:collapse;min-width:760px;}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--rule);vertical-align:middle;}
+th{font-family:'DM Mono',monospace;font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--panel);}
+tr:last-child td{border-bottom:0;}
+td.n{font-family:'DM Mono',monospace;font-size:14px;white-space:nowrap;}
+.t{font-weight:600;color:var(--green);}
+.s{font-size:12.5px;color:var(--muted);}
+.fill{height:6px;border-radius:3px;background:var(--panel);width:120px;overflow:hidden;margin-top:6px;}
+.fill i{display:block;height:100%;background:linear-gradient(90deg,#4A8C5C,var(--gold));}
+.flash{animation:fl 1.6s ease;}
+@keyframes fl{0%{background:rgba(201,168,76,.35);}100%{background:transparent;}}
+.mix{display:flex;height:10px;border-radius:5px;overflow:hidden;width:150px;}
+.mix i{display:block;height:100%;}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:10px;}
+.legend span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--c);}
+.grid2{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:860px){.grid2{grid-template-columns:1.2fr 1fr;}}
+.card{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:18px 20px;}
+.feed{list-style:none;max-height:340px;overflow:auto;}
+.feed li{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--rule);font-size:14px;}
+.feed li:last-child{border-bottom:0;}
+.av{width:32px;height:32px;border-radius:50%;background:var(--green);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;flex-shrink:0;}
+.av.ci{background:var(--ok);color:#fff;}
+.feed .tm{margin-left:auto;font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);}
+.empty{color:var(--muted);font-size:14px;padding:12px 0;}
+.door{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;}
+.door .card{text-align:center;padding:14px;}
+.door .qr{width:120px;height:120px;margin:8px auto;}
+.door .qr svg{width:100%;height:100%;}
+.door a{font-size:12px;color:var(--muted);}
+.sample{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold-d);border:1px solid rgba(201,168,76,.5);border-radius:3px;padding:1px 6px;margin-left:8px;vertical-align:middle;}
+.foot{margin-top:48px;padding-top:16px;border-top:1px solid var(--rule);font-size:12.5px;color:var(--muted);}
+@media print{.btns{display:none;}.page{max-width:none;padding:0;}.kpi{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>window.qrcode||document.write('<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"><\/script>')</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="events.js"></script>
+<script src="promote.js"></script>
+</head>
+<body>
+<div class="page">
+  <div class="bar">
+    <div class="brand"><div class="crest" id="crest">B</div><div><div class="bn" id="bn">Ballantyne Country Club</div><div class="eyebrow">ClubOS Promote · Staff view</div></div></div>
+    <div class="btns"><a class="btn ghost" href="admin.html" style="text-decoration:none">+ Add an event</a><button class="btn ghost" id="reset">Reset demo</button><button class="btn" onclick="window.print()">Print / Save as PDF</button></div>
+  </div>
+
+  <h1>Who signs up, and who shows up</h1>
+  <p class="lede">Every RSVP from the club screen, the app, or a friend's invite lands here — and the door QR confirms who actually came. Counts update live while this page is open.</p>
+
+  <div class="kpis" id="kpis"></div>
+
+  <h2>Upcoming events</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Event</th><th>RSVPs</th><th>Early sign-ups</th><th>Checked in</th><th>Where sign-ups came from <span class="sample">sample</span></th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table></div>
+  <div class="legend"><span style="--c:#0D1F17">Club screen QR</span><span style="--c:#C9A84C">BCC App / Pro Shop</span><span style="--c:#4A8C5C">Friend invite</span><span style="--c:#9aa39a">Walk-in at door</span></div>
+
+  <div class="grid2">
+    <div>
+      <h2>Last month's results <span class="sample">sample</span></h2>
+      <div class="tbl"><table style="min-width:520px">
+        <thead><tr><th>Event</th><th>RSVPs</th><th>Showed up</th><th>Show rate</th><th>Walk-ins</th></tr></thead>
+        <tbody id="past"></tbody>
+      </table></div>
+      <p class="s" style="margin-top:8px">No-shows are the number most clubs never see. With a door check-in, it's measured for every event.</p>
+    </div>
+    <div>
+      <h2>Live activity</h2>
+      <div class="card"><ul class="feed" id="feed"></ul></div>
+    </div>
+  </div>
+
+  <h2>Door check-in codes</h2>
+  <p class="s" style="margin-bottom:12px">Print one per event and set it at the entrance. A scan confirms the member arrived — RSVP'd or walk-in.</p>
+  <div class="door" id="door"></div>
+
+  <div class="foot">ClubOS · Clubhouse CTV · Demonstration build. Event counts are seeded for the demo; no member data is collected or stored.</div>
+</div>
+
+<script>
+const V=window.CLUBOS_VENUE, P=window.Promote, E=P.esc;
+document.getElementById('crest').textContent=V.crest;
+document.getElementById('bn').textContent=V.name;
+
+const PAST=[
+  {t:'Member-Guest Social',d:'Sep 19',rsvp:52,came:44,walk:9},
+  {t:'Pickleball Round Robin',d:'Sep 26',rsvp:24,came:21,walk:3},
+  {t:'Family Movie Night',d:'Oct 3',rsvp:71,came:53,walk:12},
+  {t:'Junior Fall Clinic',d:'Oct 10',rsvp:16,came:15,walk:0}
+];
+function srcMix(ev){
+  const s=P.stats(ev), live={tv:0,app:0,friend:0,door:0};
+  s.recent.filter(r=>r.type==='rsvp').forEach(r=>{live[r.src in live?r.src:'tv']+=1+(r.guests||0);});
+  const seeded=ev.going;
+  const mix={tv:Math.round(seeded*.38)+live.tv,app:Math.round(seeded*.47)+live.app,friend:Math.round(seeded*.15)+live.friend,door:live.door};
+  mix.app+=seeded-Math.round(seeded*.38)-Math.round(seeded*.47)-Math.round(seeded*.15);
+  return mix;
+}
+function render(flashId){
+  const evs=P.upcoming();
+  let totalGoing=0,totalTv=0,totalEarly=0,totalCi=0;
+  document.getElementById('rows').innerHTML=evs.map(ev=>{
+    const s=P.stats(ev), m=srcMix(ev), sum=m.tv+m.app+m.friend+m.door||1;
+    totalGoing+=s.going; totalTv+=m.tv; totalEarly+=s.early; totalCi+=s.checkedIn;
+    const pct=k=>(m[k]/sum*100).toFixed(1)+'%';
+    return `<tr class="${ev.id===flashId?'flash':''}"><td><div class="t">${E(ev.title)}${ev.custom?' <span class="sample" style="color:#2f7a48;border-color:rgba(47,122,72,.4)">new</span>':''}</div><div class="s">${E(P.fmtDay(ev,{weekday:'short',month:'short',day:'numeric'}))} · ${ev.start} · ${E(ev.location)}</div></td>
+      <td class="n">${s.going}${ev.cap?' / '+ev.cap:''}${ev.cap?`<div class="fill"><i style="width:${Math.round(s.pct*100)}%"></i></div>`:''}</td>
+      <td class="n">${s.early}${s.going?` <span class="s">(${Math.round(s.early/s.going*100)}%)</span>`:''}</td>
+      <td class="n">${s.checkedIn}</td>
+      <td><div class="mix"><i style="width:${pct('tv')};background:#0D1F17"></i><i style="width:${pct('app')};background:#C9A84C"></i><i style="width:${pct('friend')};background:#4A8C5C"></i><i style="width:${pct('door')};background:#9aa39a"></i></div>
+        <div class="s" style="margin-top:4px">${m.tv} from the club screen</div></td></tr>`;
+  }).join('');
+  const pastR=PAST.reduce((a,p)=>a+p.rsvp,0), pastC=PAST.reduce((a,p)=>a+p.came,0);
+  document.getElementById('kpis').innerHTML=[
+    [totalGoing,'members signed up for upcoming events'],
+    [totalTv,'sign-ups from the club screen QR'],
+    [(totalGoing?Math.round(totalEarly/totalGoing*100):0)+'%','signed up in the first 48 hours'],
+    [Math.round(pastC/pastR*100)+'%','show rate, last month (sample)']
+  ].map(k=>`<div class="kpi"><b>${k[0]}</b><span>${k[1]}</span></div>`).join('');
+  document.getElementById('past').innerHTML=PAST.map(p=>`<tr><td><div class="t">${E(p.t)}</div><div class="s">${p.d}</div></td><td class="n">${p.rsvp}</td><td class="n">${p.came}</td><td class="n">${Math.round(p.came/p.rsvp*100)}%</td><td class="n">${p.walk}</td></tr>`).join('');
+  const feed=[];
+  evs.forEach(ev=>P.stats(ev).recent.forEach(r=>feed.push({...r,ev})));
+  feed.sort((a,b)=>b.at-a.at);
+  document.getElementById('feed').innerHTML=feed.length?feed.slice(0,30).map(f=>`<li><div class="av ${f.type==='checkin'?'ci':''}">${P.initials(f.name)}</div>
+    <div><b>${E(f.name)}</b> ${f.type==='checkin'?'checked in to':'RSVP\'d for'} ${E(f.ev.title)}${f.guests?' (+'+f.guests+')':''}<div class="s">${{tv:'via club screen',app:'via app',friend:'via friend invite',door:'walk-in at door'}[f.src]||'via club screen'}</div></div>
+    <div class="tm">${new Date(f.at).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</div></li>`).join('')
+    :'<li class="empty">Scan a QR on the club screen to see RSVPs arrive here.</li>';
+}
+function renderDoor(){
+  document.getElementById('door').innerHTML=P.upcoming().map(ev=>{const url=P.rsvpUrl(ev,'&checkin=1&src=door');
+    return `<div class="card"><div class="eyebrow">${E(P.relDay(ev))}</div><div class="t" style="margin-top:4px">${E(ev.title)}</div><div class="qr">${P.qrSvg(url,4)}</div><a href="${url}" target="_blank">Open check-in</a></div>`;}).join('');
+}
+P.onMessage(m=>{render(m.eventId);if(m.type==='event_upsert'||m.type==='event_delete')renderDoor();});
+document.getElementById('reset').onclick=()=>{if(confirm('Clear the live RSVPs and check-ins from this demo?')){P.reset();try{localStorage.removeItem('clubos_promote_mine_v1');}catch(e){}render();}};
+render(); renderDoor();
+</script>
+</body>
+</html>

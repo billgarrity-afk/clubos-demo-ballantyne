@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0D1F17">
+<title>RSVP · Ballantyne Country Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--green:#0D1F17;--green-2:#163126;--cream:#FAF7F2;--gold:#C9A84C;--gold-d:#A88A38;--ink:#1a1f1c;--muted:#5f665f;--rule:#e4ddcf;--panel:#f1ece2;--ok:#2f7a48;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;font-size:16px;line-height:1.5;}
+.wrap{max-width:480px;margin:0 auto;padding-bottom:40px;}
+.top{background:var(--green);color:var(--cream);padding:22px 20px 28px;border-radius:0 0 22px 22px;}
+.club{display:flex;align-items:center;gap:12px;}
+.crest{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:17px;flex-shrink:0;}
+.club-n{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;line-height:1.1;}
+.club-s{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);}
+.eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);}
+.ev-title{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:600;line-height:1.05;margin-top:22px;}
+.ev-when{font-family:'DM Mono',monospace;font-size:13px;color:var(--gold);margin-top:12px;letter-spacing:.5px;}
+.ev-loc{font-size:15px;color:#cfd6cf;margin-top:4px;}
+.sec{padding:20px;}
+.blurb{font-size:16px;color:var(--muted);}
+.stat{background:#fff;border:1px solid var(--rule);border-radius:14px;padding:16px 18px;margin-top:16px;}
+.stat-row{display:flex;justify-content:space-between;align-items:baseline;}
+.going{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;color:var(--green);line-height:1;}
+.going small{font-family:'DM Sans',sans-serif;font-size:14px;color:var(--muted);font-weight:400;margin-left:6px;}
+.left{font-family:'DM Mono',monospace;font-size:12px;color:var(--gold-d);}
+.bar{height:6px;border-radius:3px;background:var(--panel);margin-top:12px;overflow:hidden;}
+.fill{height:100%;background:linear-gradient(90deg,#4A8C5C,var(--gold));transition:width .8s;}
+.who{display:flex;align-items:center;gap:10px;margin-top:14px;}
+.avs{display:flex;}
+.av{width:32px;height:32px;border-radius:50%;background:var(--green);color:var(--gold);border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;margin-left:-8px;}
+.av:first-child{margin-left:0;}
+.av.me{background:var(--gold);color:var(--green);}
+.who-t{font-size:14px;color:var(--muted);}
+label{display:block;font-size:13px;font-weight:600;color:var(--green);margin:18px 0 6px;letter-spacing:.3px;}
+input{width:100%;font:16px 'DM Sans',sans-serif;padding:14px 16px;border:1.5px solid var(--rule);border-radius:12px;background:#fff;color:var(--ink);outline:none;}
+input:focus{border-color:var(--gold);}
+.step{display:flex;align-items:center;gap:0;border:1.5px solid var(--rule);border-radius:12px;background:#fff;width:max-content;}
+.step button{width:48px;height:48px;border:0;background:none;font-size:22px;color:var(--green);cursor:pointer;}
+.step span{min-width:40px;text-align:center;font-family:'DM Mono',monospace;font-size:16px;}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:17px;font:600 17px 'DM Sans',sans-serif;cursor:pointer;margin-top:22px;background:var(--green);color:var(--cream);letter-spacing:.3px;}
+.btn:active{transform:scale(.99);}
+.btn.gold{background:var(--gold);color:var(--green);}
+.btn.ghost{background:transparent;color:var(--green);border:1.5px solid var(--green);margin-top:12px;}
+.btn[disabled]{opacity:.5;}
+.note{font-size:12.5px;color:var(--muted);text-align:center;margin-top:12px;}
+.done{text-align:center;padding:28px 20px 0;}
+.check{width:72px;height:72px;border-radius:50%;background:var(--ok);color:#fff;display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto;animation:pop .5s ease;}
+@keyframes pop{0%{transform:scale(.3);}70%{transform:scale(1.12);}100%{transform:scale(1);}}
+.done h2{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;color:var(--green);margin-top:16px;line-height:1.1;}
+.done p{color:var(--muted);margin-top:8px;}
+.badge{display:inline-block;margin-top:14px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;border-radius:20px;background:rgba(201,168,76,.15);color:var(--gold-d);border:1px solid rgba(201,168,76,.4);}
+.pass{margin:22px 0 0;background:var(--green);color:var(--cream);border-radius:16px;padding:20px;text-align:left;}
+.pass .code{font-family:'DM Mono',monospace;font-size:28px;letter-spacing:6px;color:var(--gold);margin-top:6px;}
+.pass .k{font-size:12px;color:#cfd6cf;}
+.list .ev{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid var(--rule);border-radius:14px;padding:16px 18px;margin-top:12px;}
+.list .ev .t{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--green);line-height:1.1;margin-top:4px;}
+.list .ev .m{font-size:13px;color:var(--muted);margin-top:4px;}
+.foot{text-align:center;margin-top:30px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#a3a69f;}
+.foot b{font-family:'Cormorant Garamond',serif;font-size:15px;letter-spacing:.5px;text-transform:none;color:var(--green);}
+.foot b span{color:var(--gold);}
+.hidden{display:none;}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="events.js"></script>
+<script src="promote.js"></script>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+const V=window.CLUBOS_VENUE, P=window.Promote, q=new URLSearchParams(location.search);
+let ev=P.eventById(q.get('e'));
+const src=q.get('src')||'tv', checkinMode=q.get('checkin')==='1';
+// Staff-added event this phone hasn't seen yet: it rides along in the link
+if(!ev&&q.get('d')){const u=P.unpack(q.get('d'));if(u&&u.id===q.get('e'))ev=P.registerEvent(u);}
+const MINE_KEY='clubos_promote_mine_v1';
+let mine=P.load(MINE_KEY,{name:'',events:{}});   // events: {id:{num,code,checkedIn}}
+let guests=0;
+const app=document.getElementById('app'), E=P.esc;
+
+function header(inner){
+  return `<div class="top"><div class="club"><div class="crest">${V.crest}</div><div><div class="club-n">${E(V.name)}</div><div class="club-s">Member Events</div></div></div>${inner||''}</div>`;
+}
+function foot(){return `<div class="foot">Powered by <b>Club<span>OS</span></b> · Demo</div>`;}
+function statHtml(e,me){
+  const s=P.stats(e), shown=s.who.filter(n=>n!==me).slice(0,4);
+  if(!s.going&&!me) return `<div class="stat"><div class="stat-row"><div class="going">0<small>${e.cap?'of '+e.cap+' spots':'going'}</small></div></div><div class="who-t" style="margin-top:10px"><b style="color:#2f7a48">Be the first to join.</b> Your name goes up on the club screen.</div></div>`;
+  const others=Math.max(s.going-shown.length-(me?1:0),0);
+  return `<div class="stat"><div class="stat-row"><div class="going">${s.going}<small>${e.cap?'of '+e.cap+' spots':'going'}</small></div>
+    <div class="left">${e.cap?(s.full?'Waitlist open':s.spotsLeft+' left'):''}</div></div>
+    ${e.cap?`<div class="bar"><div class="fill" style="width:${Math.round(s.pct*100)}%"></div></div>`:''}
+    <div class="who"><div class="avs">${me?`<div class="av me">${P.initials(me)}</div>`:''}${shown.map(n=>`<div class="av">${P.initials(n)}</div>`).join('')}</div>
+    <div class="who-t">${me?'<b>You</b>, ':''}${E(shown[0]||'')}${others?' + '+others+' more':''}</div></div></div>`;
+}
+function evHeader(e){
+  return header(`<div class="ev-title">${E(e.title)}</div><div class="ev-when">${E(P.fmtDay(e,{weekday:'short',month:'short',day:'numeric'}))} · ${e.start} – ${e.end}</div><div class="ev-loc">${E(e.location)}</div>`);
+}
+
+// ── No event chosen: list everything upcoming ──
+function renderList(){
+  app.innerHTML=header(`<div class="ev-title" style="font-size:32px">What's coming up</div>`)+
+    `<div class="sec list">${P.upcoming().map(e=>{const s=P.stats(e);
+      return `<a class="ev" href="rsvp.html?e=${encodeURIComponent(e.id)}&src=${encodeURIComponent(src)}"><div class="eyebrow">${E(P.relDay(e))} · ${e.start}</div><div class="t">${E(e.title)}</div><div class="m">${s.going} going · ${E(e.location)}${mine.events[e.id]?' · <b style="color:#2f7a48">You\'re in</b>':''}</div></a>`;}).join('')}</div>`+foot();
+}
+
+// ── RSVP form ──
+function renderForm(){
+  const s=P.stats(ev);
+  app.innerHTML=evHeader(ev)+`<div class="sec">
+    <p class="blurb">${E(ev.blurb)}</p>
+    ${statHtml(ev)}
+    <label for="nm">Your name</label>
+    <input id="nm" autocomplete="name" placeholder="First name and last initial" value="${E(mine.name)}">
+    <label>Bringing anyone?</label>
+    <div class="step"><button id="minus" aria-label="Fewer guests">−</button><span id="gc">0</span><button id="plus" aria-label="More guests">+</button></div>
+    <button class="btn" id="go">${s.full?'Join the waitlist':"I'm in"}</button>
+    <p class="note">Your RSVP goes to the club. Today's sign-up path (${E(ev.signup)}) still works.</p>
+  </div>`+foot();
+  const gc=document.getElementById('gc');
+  document.getElementById('minus').onclick=()=>{guests=Math.max(0,guests-1);gc.textContent=guests;};
+  document.getElementById('plus').onclick=()=>{guests=Math.min(3,guests+1);gc.textContent=guests;};
+  document.getElementById('go').onclick=()=>{
+    const name=document.getElementById('nm').value.trim().replace(/\s+/g,' ');
+    if(!name){document.getElementById('nm').focus();return;}
+    mine.name=name;
+    const num=P.stats(ev).going+1;
+    P.send('rsvp',ev.id,name,{guests,src});
+    mine.events[ev.id]={num,code:Math.random().toString(36).slice(2,6).toUpperCase(),checkedIn:false,guests};
+    P.save(MINE_KEY,mine);
+    renderDone(true);
+  };
+}
+
+// ── Confirmation / pass ──
+function renderDone(fresh){
+  const r=mine.events[ev.id], early=r.num<=Math.max(ev.early+3,Math.ceil((ev.cap||60)/3));
+  app.innerHTML=evHeader(ev)+`<div class="done">
+      <div class="check">✓</div>
+      <h2>${fresh?"You're in, "+E(mine.name.split(' ')[0])+'.':"You're on the list."}</h2>
+      <p>${r.guests?'You plus '+r.guests+(r.guests>1?' guests':' guest')+'. ':''}Your name is up on the club screen.</p>
+      ${early?`<div class="badge">Early sign-up · #${r.num}</div>`:''}
+    </div>
+    <div class="sec">
+      ${statHtml(ev,mine.name)}
+      <div class="pass"><div class="k">Check-in code · show at the door or scan the event QR</div><div class="code">${r.code}</div>
+        <div class="k" style="margin-top:8px">${r.checkedIn?'✓ Checked in':E(P.fmtDay(ev,{weekday:'long',month:'long',day:'numeric'}))+' · '+ev.start}</div></div>
+      <button class="btn gold" id="cal">Add to calendar</button>
+      <button class="btn ghost" id="share">Invite a friend</button>
+      ${r.checkedIn?'':`<button class="btn ghost" id="ci">I'm here — check in</button>`}
+      <p class="note"><a href="rsvp.html?src=${encodeURIComponent(src)}" style="color:#5f665f">See all upcoming events</a></p>
+    </div>`+foot();
+  document.getElementById('cal').onclick=downloadIcs;
+  document.getElementById('share').onclick=share;
+  const ci=document.getElementById('ci'); if(ci) ci.onclick=checkIn;
+}
+
+// ── Check-in (scan at the event door: rsvp.html?e=ID&checkin=1) ──
+function checkIn(){
+  const r=mine.events[ev.id]; if(!r||r.checkedIn) return renderDone(false);
+  r.checkedIn=true; P.save(MINE_KEY,mine);
+  P.send('checkin',ev.id,mine.name,{src});
+  app.innerHTML=evHeader(ev)+`<div class="done"><div class="check">✓</div><h2>Checked in.</h2><p>Enjoy ${E(ev.title)}, ${E(mine.name.split(' ')[0])}.</p></div>`+
+    `<div class="sec">${statHtml(ev,mine.name)}<button class="btn ghost" id="back">View my pass</button></div>`+foot();
+  document.getElementById('back').onclick=()=>renderDone(false);
+}
+function renderWalkIn(){
+  // Scanned the door QR without an RSVP: capture the walk-in and check in.
+  app.innerHTML=evHeader(ev)+`<div class="sec"><p class="blurb">Welcome! Check in so the club knows you made it.</p>
+    <label for="nm">Your name</label><input id="nm" placeholder="First name and last initial" value="${E(mine.name)}">
+    <button class="btn" id="go">Check in</button></div>`+foot();
+  document.getElementById('go').onclick=()=>{
+    const name=document.getElementById('nm').value.trim(); if(!name) return;
+    mine.name=name; mine.events[ev.id]={num:P.stats(ev).going+1,code:Math.random().toString(36).slice(2,6).toUpperCase(),checkedIn:false,guests:0,walkIn:true};
+    P.send('rsvp',ev.id,name,{src:'door'}); P.save(MINE_KEY,mine); checkIn();
+  };
+}
+
+// ── Calendar + share ──
+function icsTime(dateStr,t){const m=t.match(/(\d{1,2}):(\d{2})\s*([AP]M)/i);let h=+m[1];if(m[3].toUpperCase()==='PM'&&h!==12)h+=12;if(m[3].toUpperCase()==='AM'&&h===12)h=0;return dateStr.replace(/-/g,'')+'T'+String(h).padStart(2,'0')+m[2]+'00';}
+function downloadIcs(){
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//ClubOS//Promote//EN','BEGIN:VEVENT','UID:'+ev.id+'@clubos-demo',
+    'DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').split('.')[0]+'Z',
+    'DTSTART;TZID=America/New_York:'+icsTime(ev.date,ev.start),'DTEND;TZID=America/New_York:'+icsTime(ev.date,ev.end),
+    'SUMMARY:'+ev.title+' · '+V.name,'LOCATION:'+ev.location+', '+V.name,'DESCRIPTION:'+ev.blurb,'END:VEVENT','END:VCALENDAR'].join('\r\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));a.download=ev.id+'.ics';a.click();
+}
+async function share(){
+  const url=P.rsvpUrl(ev,'&src=friend');
+  const text=`I'm going to ${ev.title} at ${V.short} — ${P.relDay(ev)} at ${ev.start}. Join me?`;
+  try{ if(navigator.share) return await navigator.share({title:ev.title,text,url}); }catch(e){return;}
+  try{await navigator.clipboard.writeText(text+' '+url);document.getElementById('share').textContent='Link copied';}catch(e){}
+}
+
+// ── Keep counts live while the page is open ──
+P.onMessage(m=>{
+  if(!ev||m.eventId!==ev.id) return;
+  const box=document.querySelector('.stat'); if(!box) return;
+  const tmp=document.createElement('div'); tmp.innerHTML=statHtml(ev,mine.events[ev.id]?mine.name:null); box.replaceWith(tmp.firstElementChild);
+});
+
+if(!ev) renderList();
+else if(checkinMode) mine.events[ev.id]?checkIn():renderWalkIn();
+else if(mine.events[ev.id]) renderDone(false);
+else renderForm();
+</script>
+</body>
+</html>
