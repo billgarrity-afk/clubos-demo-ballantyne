@@ -124,7 +124,7 @@
   // Staff-added events travel inside the QR link, so a phone that has
   // never seen the event can still open it.
   // Short keys and no description keep the QR code easy to scan.
-  const PACK = { id: 'i', title: 't', category: 'c', date: 'd', start: 's', end: 'e', location: 'l', cap: 'p', theme: 'h' };
+  const PACK = { id: 'i', title: 't', category: 'c', date: 'd', start: 's', end: 'e', location: 'l', cap: 'p', theme: 'h', registerUrl: 'r' };
   function pack(ev) {
     const o = {}; Object.keys(PACK).forEach(k => { if (ev[k] !== undefined && ev[k] !== '') o[PACK[k]] = ev[k]; });
     return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');

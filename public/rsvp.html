@@ -93,7 +93,7 @@ function statHtml(e,me){
     <div class="left">${e.cap?(s.full?'Waitlist open':s.spotsLeft+' left'):''}</div></div>
     ${e.cap?`<div class="bar"><div class="fill" style="width:${Math.round(s.pct*100)}%"></div></div>`:''}
     <div class="who"><div class="avs">${me?`<div class="av me">${P.initials(me)}</div>`:''}${shown.map(n=>`<div class="av">${P.initials(n)}</div>`).join('')}</div>
-    <div class="who-t">${me?'<b>You</b>, ':''}${E(shown[0]||'')}${others?' + '+others+' more':''}</div></div></div>`;
+    <div class="who-t">${me?'<b>You</b>'+(shown[0]?', ':''):''}${E(shown[0]||'')}${others?' + '+others+' more':''}</div></div></div>`;
 }
 function evHeader(e){
   return header(`<div class="ev-title">${E(e.title)}</div><div class="ev-when">${E(P.fmtDay(e,{weekday:'short',month:'short',day:'numeric'}))} · ${e.start} – ${e.end}</div><div class="ev-loc">${E(e.location)}</div>`);
@@ -117,7 +117,7 @@ function renderForm(){
     <label>Bringing anyone?</label>
     <div class="step"><button id="minus" aria-label="Fewer guests">−</button><span id="gc">0</span><button id="plus" aria-label="More guests">+</button></div>
     <button class="btn" id="go">${s.full?'Join the waitlist':"I'm in"}</button>
-    <p class="note">Your RSVP goes to the club. Today's sign-up path (${E(ev.signup)}) still works.</p>
+    <p class="note">${ev.registerUrl?'Step 1 of 2: let everyone know you\'re going. Next you\'ll finish registering with the club.':'Your RSVP goes to the club. Today\'s sign-up path ('+E(ev.signup)+') still works.'}</p>
   </div>`+foot();
   const gc=document.getElementById('gc');
   document.getElementById('minus').onclick=()=>{guests=Math.max(0,guests-1);gc.textContent=guests;};
@@ -141,13 +141,14 @@ function renderDone(fresh){
       <div class="check">✓</div>
       <h2>${fresh?"You're in, "+E(mine.name.split(' ')[0])+'.':"You're on the list."}</h2>
       <p>${r.guests?'You plus '+r.guests+(r.guests>1?' guests':' guest')+'. ':''}Your name is up on the club screen.</p>
+      ${ev.registerUrl&&!r.checkedIn?`<a class="btn gold" href="${E(ev.registerUrl)}" target="_blank" rel="noopener" style="display:block;text-decoration:none;text-align:center">Complete your registration →</a><p class="note" style="margin-top:8px">One more step so the club holds your spot. Opens the club's registration page.</p>`:''}
       ${early?`<div class="badge">Early sign-up · #${r.num}</div>`:''}
     </div>
     <div class="sec">
       ${statHtml(ev,mine.name)}
       <div class="pass"><div class="k">Check-in code · show at the door or scan the event QR</div><div class="code">${r.code}</div>
         <div class="k" style="margin-top:8px">${r.checkedIn?'✓ Checked in':E(P.fmtDay(ev,{weekday:'long',month:'long',day:'numeric'}))+' · '+ev.start}</div></div>
-      <button class="btn gold" id="cal">Add to calendar</button>
+      <button class="btn ${ev.registerUrl?'ghost':'gold'}" id="cal">Add to calendar</button>
       <button class="btn ghost" id="share">Invite a friend</button>
       ${r.checkedIn?'':`<button class="btn ghost" id="ci">I'm here — check in</button>`}
       <p class="note"><a href="rsvp.html?src=${encodeURIComponent(src)}" style="color:#5f665f">See all upcoming events</a></p>

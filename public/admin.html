@@ -131,6 +131,7 @@ h2{font:600 26px 'Cormorant Garamond',serif;color:var(--green);margin:40px 0 10p
             <datalist id="locs"><option>Pickleball Courts 1–3</option><option>Pickleball Courts</option><option>Tennis Courts 1–4</option><option>Court 5</option><option>FAC Lounge</option></datalist></div>
           <div class="f"><label for="cap">Spots <span class="hint">· 0 = no limit</span></label><input id="cap" type="number" min="0" max="500" value="12" inputmode="numeric"></div>
         </div>
+        <div class="f"><label for="reg">Registration link <span class="hint">· optional — where members finish signing up (BCC App, club website)</span></label><input id="reg" type="url" inputmode="url" placeholder="https://…" autocomplete="off"></div>
         <div class="f"><label for="blurb">Short description <span class="hint">· optional</span></label><textarea id="blurb" maxlength="140" placeholder="One or two lines members will read on the screen."></textarea><div class="count" id="cnt">0 / 140</div></div>
         <div class="f"><span class="lbl">Look</span><div class="sw" id="theme"><button type="button" class="green on" data-t="green" aria-label="Green"></button><button type="button" class="navy" data-t="navy" aria-label="Navy"></button><button type="button" class="clay" data-t="clay" aria-label="Clay"></button></div></div>
         <div class="actions"><button class="btn" type="submit" id="go">Post to the FAC screen</button><button class="btn ghost" type="button" id="cancel" style="display:none">Cancel edit</button></div>
@@ -141,7 +142,7 @@ h2{font:600 26px 'Cormorant Garamond',serif;color:var(--green);margin:40px 0 10p
     <div>
       <div class="pv-h"><div class="eyebrow">Preview · as it appears on the screen</div></div>
       <div class="tvf"><div class="poster" id="pv" data-theme="green"></div></div>
-      <p class="pv-note">The QR code opens the sign-up page for this event. Names appear on the screen as members join.</p>
+      <p class="pv-note" id="pvNote">The QR code opens the sign-up page for this event. Names appear on the screen as members join.</p>
     </div>
   </div>
 
@@ -160,6 +161,7 @@ function to12(t){if(!t)return'';let[h,m]=t.split(':').map(Number);const ap=h>=12
 function to24(t){const m=(t||'').match(/(\d{1,2}):(\d{2})\s*([AP]M)/i);if(!m)return'';let h=+m[1];const ap=m[3].toUpperCase();if(ap==='PM'&&h!==12)h+=12;if(ap==='AM'&&h===12)h=0;return String(h).padStart(2,'0')+':'+m[2];}
 function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function nextFriday(){const d=new Date();d.setDate(d.getDate()+((5-d.getDay()+7)%7||7));return iso(d);}
+function normUrl(u){u=(u||'').trim();if(!u)return'';return /^https?:\/\//i.test(u)?u:'https://'+u;}
 function slug(s){return (s||'event').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,28)||'event';}
 $('date').value=nextFriday(); $('date').min=iso(new Date());
 
@@ -172,6 +174,7 @@ function draft(){
     start: to12($('start').value), end: to12($('end').value),
     location: $('loc').value.trim() || 'FAC',
     blurb: $('blurb').value.trim(), cap: Math.max(0, parseInt($('cap').value,10)||0), theme,
+    registerUrl: normUrl($('reg').value),
     custom: true
   };
 }
@@ -189,6 +192,7 @@ function preview(){
       ${going?(ev.cap?`<div class="p-left">${Math.max(ev.cap-going,0)} spots left</div>`:''):`<div class="p-first"><b>Be the first to join.</b></div>`}
     </div><div class="qr">${P.qrSvg(P.rsvpUrl(ev,'&src=tv'),4)}<span>Scan to join</span></div></div>`;
   $('cnt').textContent=$('blurb').value.length+' / 140';
+  $('pvNote').textContent=ev.registerUrl?'Members tap "I\'m in" to show they\'re going, then finish registering at your link. Names appear on the screen as members join.':'The QR code opens the sign-up page for this event. Names appear on the screen as members join.';
 }
 
 function validate(){
@@ -198,6 +202,8 @@ function validate(){
   if(!$('start').value) bad.push(['start','Add a start time.']);
   if(!$('end').value) bad.push(['end','Add an end time.']);
   else if($('start').value && $('end').value<=$('start').value) bad.push(['end','The end time needs to be after the start time.']);
+  $('reg').classList.remove('bad');
+  if($('reg').value.trim()&&!/^(https?:\/\/)?[^\s.]+\.[^\s]{2,}/i.test($('reg').value.trim())) bad.push(['reg','That registration link doesn\'t look like a web address.']);
   bad.forEach(b=>$(b[0]).classList.add('bad'));
   $('err').textContent=bad.length?bad[0][1]:'';
   if(bad.length) $(bad[0][0]).focus();
@@ -214,7 +220,7 @@ function setTheme(t){theme=t;[...$('theme').children].forEach(b=>b.classList.tog
 
 $('cat').onclick=e=>{if(e.target.tagName==='BUTTON'){setCat(e.target.textContent);preview();}};
 $('theme').onclick=e=>{if(e.target.dataset.t){setTheme(e.target.dataset.t);preview();}};
-['title','date','start','end','loc','cap','blurb'].forEach(k=>$(k).addEventListener('input',()=>{$(k).classList.remove('bad');if($('err').textContent)$('err').textContent='';preview();}));
+['title','date','start','end','loc','cap','blurb','reg'].forEach(k=>$(k).addEventListener('input',()=>{$(k).classList.remove('bad');if($('err').textContent)$('err').textContent='';preview();}));
 
 $('f').onsubmit=e=>{
   e.preventDefault();
@@ -233,7 +239,7 @@ $('cancel').onclick=resetForm;
 function edit(id){
   const ev=P.eventById(id); if(!ev) return;
   editing=id; $('title').value=ev.title; $('date').value=ev.date; $('start').value=to24(ev.start); $('end').value=to24(ev.end);
-  $('loc').value=ev.location||''; $('cap').value=ev.cap||0; $('blurb').value=ev.blurb||'';
+  $('loc').value=ev.location||''; $('cap').value=ev.cap||0; $('blurb').value=ev.blurb||''; $('reg').value=ev.registerUrl||'';
   setCat(ev.category||'Racquet'); setTheme(ev.theme||'green');
   $('go').textContent='Update on the FAC screen'; $('cancel').style.display=''; $('done').classList.remove('on');
   preview(); window.scrollTo({top:0,behavior:'smooth'});
@@ -243,7 +249,7 @@ function renderList(){
   $('list').innerHTML=evs.map(ev=>{const s=P.stats(ev);
     return `<div class="li"><div class="chip ${ev.theme||'green'}"></div><div class="li-m">
       <div class="li-t">${E(ev.title)}${ev.custom?'<span class="tag new">Posted here</span>':'<span class="tag">Sample</span>'}</div>
-      <div class="li-s">${E(P.fmtDay(ev,{weekday:'short',month:'short',day:'numeric'}))} · ${ev.start} · ${E(ev.location)} · ${s.going}${ev.cap?' / '+ev.cap:''} in</div></div>
+      <div class="li-s">${E(P.fmtDay(ev,{weekday:'short',month:'short',day:'numeric'}))} · ${ev.start} · ${E(ev.location)} · ${s.going}${ev.cap?' / '+ev.cap:''} in${ev.registerUrl?' · links to registration':''}</div></div>
       ${ev.custom?`<div class="li-a"><button class="mini" data-edit="${E(ev.id)}">Edit</button><button class="mini rm" data-rm="${E(ev.id)}">Remove</button></div>`:''}</div>`;}).join('');
 }
 $('list').onclick=e=>{
