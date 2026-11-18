@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06090C">
+<meta name="robots" content="noindex">
+<title>Staff Night TV Screens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+  /* Layout idea: the whole screen is one large ticket. The body carries the scene,
+     the stub on the right always carries the code to scan and the raffle time. */
+  :root {
+    color-scheme: dark;
+    --wall: #06090C;
+    --pitch: #101820;
+    --moss: #18222E;
+    --cream: #F5F7FA;
+    --cream-dim: rgba(245, 247, 250, .66);
+    --line: rgba(245, 247, 250, .2);
+    --gold: #0085CA;
+    --ink: #0E161E;
+    --ink-dim: rgba(14, 22, 30, .62);
+    --display: "Cormorant Garamond", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --body: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { height: 100%; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body { height: 100%; margin: 0; background: var(--pitch); color: var(--cream); font: 400 17px/1.5 var(--body); -webkit-font-smoothing: antialiased; }
+  h1, h2, p, ol, ul { margin: 0; padding: 0; }
+  ol, ul { list-style: none; }
+  button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+  /* ================= the stage: always authored at 1920 x 1080 ================= */
+  .stage {
+    position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden;
+    transform-origin: 0 0; background: var(--wall); color: var(--cream); font-family: var(--body); text-align: left;
+  }
+  .shape { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  .main {
+    position: absolute; left: 40px; top: 40px; bottom: 40px;
+    padding: 50px 64px 58px 78px; display: flex; flex-direction: column;
+  }
+  .stubcol {
+    position: absolute; top: 40px; bottom: 40px; right: 40px;
+    padding: 58px 46px 56px; display: flex; flex-direction: column; align-items: center; text-align: center;
+  }
+
+  .top { display: flex; align-items: baseline; justify-content: space-between; gap: 40px; }
+  .brand { display: flex; align-items: baseline; gap: 18px; font: 600 50px/1 var(--display); }
+  .tag { padding: 4px 14px 5px; border: 2px solid var(--gold); border-radius: 99px; color: var(--gold); font: 500 22px/1.2 var(--body); transform: translateY(-6px); }
+  .top-side { font: 500 28px/1 var(--body); color: var(--cream-dim); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .scene { position: relative; flex: 1; min-height: 0; margin-top: 30px; }
+
+  /* small ticket stubs, the same mark the phone uses for progress */
+  .stub { position: relative; flex: none; border: 2.5px solid var(--line); border-radius: 5px; }
+  .stub::before, .stub::after { content: ""; position: absolute; top: 50%; border-radius: 50%; background: var(--pitch); }
+  .stub.is-gold { background: var(--gold); border-color: var(--gold); }
+  .stub.is-done { background: rgba(245, 247, 250, .3); border-color: transparent; }
+
+  /* the code to scan, on a cream tile so every phone can read it */
+  .qr { flex: none; display: block; background: var(--cream); }
+  .qr svg { display: block; width: 100%; height: 100%; }
+
+  /* ---------- the stub column (every scene except the invitation) ---------- */
+  .sc-title { font: 600 46px/1.04 var(--display); text-wrap: balance; }
+  .sc-qr { margin-top: 30px; width: 304px; height: 304px; padding: 24px; border-radius: 22px; }
+  .sc-how { margin-top: 20px; font: 500 26px/1.25 var(--body); color: var(--cream-dim); }
+  .sc-live { width: 100%; margin-top: 34px; display: grid; gap: 12px; }
+  .sc-rule { align-self: stretch; margin-top: auto; border-top: 3px dashed var(--line); }
+  .sc-live div { display: flex; align-items: baseline; justify-content: center; gap: 14px; }
+  .sc-live b { font: 700 66px/1 var(--display); color: var(--cream); font-variant-numeric: lining-nums; }
+  .sc-live span { font: 500 26px/1.1 var(--body); color: var(--cream-dim); }
+  .sc-raffle { margin-top: 34px; }
+  .sc-raffle span { display: block; font: 600 28px/1 var(--body); color: var(--cream-dim); }
+  .sc-raffle b { display: block; margin-top: 10px; font: 700 132px/.84 var(--display); color: var(--gold); font-variant-numeric: lining-nums; }
+  .stubcol.has-live .sc-raffle b { font-size: 100px; }
+
+  /* ---------- scene: the invitation ---------- */
+  .pl { height: 100%; display: flex; flex-direction: column; }
+  .pl-title { font: 700 166px/1.1 var(--display); letter-spacing: -.02em; margin-top: -22px; }
+  .pl-lede { margin-top: 26px; max-width: 19.5em; font: 400 42px/1.34 var(--body); text-wrap: pretty; }
+  .pl-strip { margin-top: auto; display: flex; gap: 12px; width: 780px; }
+  .pl-strip .stub { flex: 1; height: 42px; border-width: 3px; border-radius: 8px; }
+  .pl-strip .stub::before, .pl-strip .stub::after { width: 18px; height: 18px; margin-top: -9px; }
+  .pl-strip .stub::before { left: -11px; }
+  .pl-strip .stub::after { right: -11px; }
+  .pl-foot { margin-top: 28px; font: 500 36px/1.3 var(--body); color: var(--cream-dim); }
+  .pl-foot b { color: var(--gold); font-weight: 600; }
+  .stubcol.is-big { justify-content: center; padding: 56px 60px; }
+  .pq-qr { width: 560px; height: 560px; padding: 44px; border-radius: 34px; }
+  .pq-how { margin-top: 34px; font: 600 40px/1.2 var(--body); }
+  .pq-live { margin-top: 26px; display: flex; gap: 46px; }
+  .pq-live div { display: flex; align-items: baseline; gap: 14px; }
+  .pq-live b { font: 700 72px/1 var(--display); color: var(--cream); font-variant-numeric: lining-nums; }
+  .pq-live span { font: 500 28px/1.1 var(--body); color: var(--cream-dim); text-align: left; }
+
+  /* ---------- scene: tonight ---------- */
+  .tn-title { font: 700 150px/.86 var(--display); letter-spacing: -.015em; }
+  .tn-list { margin-top: 36px; }
+  .tn-row { display: flex; align-items: center; gap: 30px; height: 72px; font: 500 43px/1 var(--body); }
+  .tn-row .stub { width: 46px; height: 28px; }
+  .tn-row .stub::before, .tn-row .stub::after { width: 12px; height: 12px; margin-top: -6px; }
+  .tn-row .stub::before { left: -8px; }
+  .tn-row .stub::after { right: -8px; }
+  .tn-time { flex: none; width: 128px; color: var(--gold); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .tn-row.is-past { opacity: .42; }
+  .tn-row.is-now .tn-label { font-weight: 600; }
+  .tn-now { margin-left: 4px; padding: 7px 18px 8px; border: 2.5px solid var(--gold); border-radius: 99px; color: var(--gold); font: 600 25px/1 var(--body); }
+
+  /* ---------- scene: spotlight ---------- */
+  .sp { height: 100%; display: flex; align-items: center; gap: 66px; }
+  .sp-photo {
+    position: relative; flex: none; width: 470px; height: 610px; border-radius: 30px;
+    display: grid; place-items: center; border: 2px solid var(--line);
+    background: linear-gradient(165deg, #223040, #131C26);
+  }
+  .sp-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 28px; }
+  .sp-mono { font: 700 210px/1 var(--display); letter-spacing: -.02em; color: var(--gold); }
+  .sp-star {
+    position: absolute; top: -26px; right: -26px; width: 96px; height: 96px; border-radius: 50%;
+    display: grid; place-items: center; background: var(--gold); color: var(--pitch); box-shadow: 0 0 0 9px var(--pitch);
+  }
+  .sp-star svg { width: 52px; height: 52px; }
+  .sp-text { min-width: 0; }
+  .sp-name { font: 700 128px/1 var(--display); letter-spacing: -.015em; text-wrap: balance; }
+  .sp-dept { margin-top: 26px; font: 600 38px/1.2 var(--body); color: var(--gold); }
+  .sp-line { margin-top: 34px; max-width: 13.5em; font: 600 italic 56px/1.16 var(--display); text-wrap: pretty; }
+  .sp-honor { margin-top: 30px; font: 500 30px/1.2 var(--body); color: var(--cream-dim); }
+
+  /* ---------- scene: kudos ---------- */
+  .kd { position: relative; height: 100%; }
+  .kd-back { position: absolute; left: 150px; top: 236px; width: 1050px; height: 470px; border-radius: 28px; background: var(--cream); opacity: .2; transform: rotate(3.4deg); }
+  .kd-note {
+    position: absolute; left: 20px; top: 104px; width: 1130px; border-radius: 28px; overflow: hidden;
+    background: var(--cream); color: var(--ink); transform: rotate(-1.5deg); box-shadow: 0 30px 60px rgba(0, 0, 0, .42);
+  }
+  .kd-head { padding: 14px 64px 13px; background: var(--gold); color: var(--pitch); font: 600 italic 30px/1.1 var(--display); }
+  .kd-quote { min-height: 330px; padding: 46px 64px 40px; display: flex; align-items: center; font: 600 italic 62px/1.15 var(--display); text-wrap: pretty; }
+  .kd-cut { border-top: 3px dashed rgba(14, 22, 30, .3); }
+  .kd-sign { display: flex; align-items: baseline; justify-content: space-between; gap: 30px; padding: 26px 64px 34px; }
+  .kd-for { font: 600 34px/1.2 var(--body); }
+  .kd-for span { font-weight: 500; color: var(--ink-dim); }
+  .kd-from { font: 500 28px/1.2 var(--body); color: var(--ink-dim); text-align: right; }
+
+  /* ---------- motion, loop only ---------- */
+  .stage.is-in { animation: stage-in .7s ease both; }
+  .stage.is-in .scene > * { animation: rise .9s cubic-bezier(.2, .8, .2, 1) both; }
+  @keyframes stage-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes rise { from { transform: translateY(22px); } to { transform: none; } }
+  .stage.is-in .pl-strip .stub.will-fill { animation: fill .5s ease both; animation-delay: calc(1.6s + var(--n) * .55s); }
+  @keyframes fill { to { background: var(--gold); border-color: var(--gold); } }
+
+  /* ================= the page around the stages ================= */
+  #root { min-height: 100%; }
+  .gallery { max-width: 1180px; margin: 0 auto; padding: calc(22px + env(safe-area-inset-top)) 20px calc(40px + env(safe-area-inset-bottom)); }
+  .g-title { font: 700 clamp(40px, 9vw, 60px)/.95 var(--display); letter-spacing: -.01em; text-wrap: balance; }
+  .g-sub { margin-top: 12px; max-width: 34em; color: var(--cream-dim); }
+  .g-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 20px; }
+  .primary { min-height: 54px; padding: 0 22px; border: 0; border-radius: 16px; background: var(--gold); color: var(--pitch); font: 600 17px/1 var(--body); }
+  .quiet { min-height: 46px; padding: 0 16px; border: 1.5px solid var(--line); border-radius: 14px; background: transparent; font: 500 16px/1 var(--body); }
+  .seg { display: inline-flex; border: 1.5px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .seg button { min-height: 45px; padding: 0 16px; border: 0; background: transparent; font: 500 15px/1 var(--body); color: var(--cream-dim); }
+  .seg button[aria-pressed="true"] { background: var(--cream); color: var(--pitch); }
+  .g-mode { margin-top: 10px; font-size: 15px; color: var(--cream-dim); }
+  .g-list { display: grid; gap: 26px; margin-top: 26px; }
+  @media (min-width: 900px) { .g-list { grid-template-columns: 1fr 1fr; gap: 30px 26px; } .g-list li:first-child { grid-column: 1 / -1; } }
+  .frame { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 12px; background: var(--wall); }
+  .frame-hit { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; padding: 0; border-radius: 12px; background: transparent; }
+  .cap { margin-top: 10px; }
+  .cap b { display: block; font: 600 17px/1.3 var(--body); }
+  .cap span { display: block; margin-top: 2px; font-size: 15px; line-height: 1.45; color: var(--cream-dim); }
+  .g-foot { margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 15px; color: var(--cream-dim); }
+
+  .theater { position: fixed; inset: 0; overflow: hidden; background: #000; }
+  .theater.is-tv { cursor: none; }
+  .theater .stage-holder { position: absolute; }
+  .t-back {
+    position: absolute; z-index: 5; left: calc(14px + env(safe-area-inset-left)); top: calc(14px + env(safe-area-inset-top));
+    min-height: 44px; padding: 0 16px; border: 1.5px solid var(--line); border-radius: 14px;
+    background: rgba(6, 9, 12, .82); font: 500 15px/1 var(--body); transition: opacity .4s;
+  }
+  .t-back.is-hidden { opacity: 0; pointer-events: none; }
+  .t-turn { position: absolute; left: 0; right: 0; bottom: calc(26px + env(safe-area-inset-bottom)); text-align: center; font-size: 15px; color: var(--cream-dim); }
+
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  @media print {
+    @page { size: landscape; margin: 10mm; }
+    body { background: #fff; color: #000; }
+    .g-tools, .g-mode, .g-foot { display: none !important; }
+    .gallery { max-width: none; padding: 0; }
+    .g-title, .cap b, .cap span, .g-sub { color: #000; }
+    .g-list { display: block; }
+    .g-list li { break-inside: avoid; break-after: page; padding-top: 4mm; }
+    .frame { border-radius: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .frame-hit { display: none; }
+    .stage * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  // =====================================================================
+  // SETUP
+  //
+  //   apiBase, apiKey, eventId   The same three values as the phone page. With them
+  //                              set, the screens show live counts and mark what is
+  //                              on now. Left empty, this page is a self-contained demo.
+  //   eventDate, timeZone        The night itself. "Now" is only marked on this date.
+  //   joinQr                     The code to scan, as rows of 1s and 0s.
+  //                              Make it with: node tools/make_qr.mjs "<game address>?s=tv"
+  //
+  // On a TV, open this page with #loop on the end of the address. ?loop works too, and so
+  // does any address that ends in /loop, for players that drop the part after the #.
+  // =====================================================================
+  const CONFIG = {
+    apiBase: '',
+    apiKey: '',
+    eventId: 'demo',
+    eventDate: '2027-01-05',
+    timeZone: 'America/New_York',
+    joinQr: [
+      '111111100000100000110011001111111',
+      '100000100001000101000101001000001',
+      '101110100110001111001011001011101',
+      '101110100100010001010011001011101',
+      '101110100110010011010001001011101',
+      '100000101110000000001110001000001',
+      '111111101010101010101010101111111',
+      '000000000101000001111101100000000',
+      '100101101010110110011111110100000',
+      '110110000111101110001100111100001',
+      '000011100000000001011010011110111',
+      '101011011101001101001100111011011',
+      '001000101101000000000000111101000',
+      '110001000001100111000011101011011',
+      '100101110000011000001101011000010',
+      '000001010100000101010101101010010',
+      '111000110101111011010110001011110',
+      '011011010010011110000001110101000',
+      '110110110001001000100100011000111',
+      '010011000100000001100111010100000',
+      '011011111101101111100001010000010',
+      '011101010011001111111101110000011',
+      '111101101011000100101000111011101',
+      '011010011001001010100110100001001',
+      '100010111100000111011100111110001',
+      '000000001001111010011111100011010',
+      '111111100010100010001010101011110',
+      '100000101011111110001110100010011',
+      '101110100000100010001110111111001',
+      '101110101011111100011000001011000',
+      '101110100111101001101011000010001',
+      '100000100101001111111100000001000',
+      '111111101101111000000110111010010',
+    ],
+  };
+
+  // What the screens say until the server answers, and all they say in the demo.
+  const EVENT = {
+    title: 'Staff Night',
+    dateLine: 'Tuesday, January 5',
+    questionCount: 10,
+    baseTickets: 1,
+    ticketsPerCorrect: 1,
+    agenda: [
+      { time: '6:00', label: 'Doors and check-in' },
+      { time: '6:30', label: 'Sir Purr visits' },
+      { time: '7:00', label: 'Announcements' },
+      { time: '7:15', label: 'Group photo on the field' },
+      { time: '7:25', label: 'Staff photos and Employee of the Year' },
+      { time: '7:45', label: 'Trivia, food and time together' },
+      { time: '8:30', label: 'Raffle' },
+      { time: '9:00', label: 'Good night' },
+    ],
+  };
+
+  // Sample people and sample words. The club's photo form and kudos replace all of it.
+  // A person can carry photo: '<image address or data: URI>' and honoree: 'March'.
+  const CONTENT = {
+    headcount: 150,
+    spotlight: [
+      { name: 'Avery Coleman', dept: 'Golf Shop', line: 'Has never once lost a head cover. Has found forty-one.' },
+      { name: 'Luis Ortega', dept: 'Culinary', line: 'Makes three hundred covers on a Saturday look easy.', honoree: 'March' },
+      { name: 'Hannah Brooks', dept: 'Member Services', line: 'Knows every member by name, and most of their dogs.' },
+      { name: 'Marcus Bell', dept: 'Grounds', line: 'On the course by five so the greens roll true by seven.' },
+      { name: 'Priya Nair', dept: 'Racquets', line: 'Restrings a racquet faster than you can find your shoes.' },
+      { name: 'Tyrone Maddox', dept: 'Banquets', line: 'Set forty tables for the gala and still remembered the birthday candle.' },
+      { name: 'Dana Whitfield', dept: 'Aquatics', line: 'Taught half the club’s kids to swim this summer.' },
+    ],
+    kudos: [
+      { text: 'You stayed late three nights running so the member-guest went off without a hitch. We noticed.', to: 'Marcus Bell', toDept: 'Grounds', from: 'Dana Whitfield', fromDept: 'Aquatics' },
+      { text: 'Every new hire this year learned the ropes from you, and it shows.', to: 'Priya Nair', toDept: 'Racquets', from: 'Luis Ortega', fromDept: 'Culinary' },
+      { text: 'The calmest person in the building on the busiest Saturday of the summer.', to: 'Hannah Brooks', toDept: 'Member Services', from: 'Tyrone Maddox', fromDept: 'Banquets' },
+    ],
+  };
+
+  const params = new URLSearchParams(location.search);
+  const LOCALHOST = ['localhost', '127.0.0.1'].includes(location.hostname);
+  if (LOCALHOST && params.get('api')) CONFIG.apiBase = params.get('api');
+  if (/^[a-z0-9-]{1,60}$/.test(params.get('e') || '')) CONFIG.eventId = params.get('e');
+
+  const DEMO = !CONFIG.apiBase;
+  const FRAMED = (() => { try { return window.self !== window.top; } catch (e) { return true; } })();
+  const CAN_PRINT = !FRAMED && typeof window.print === 'function';
+  const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const NUDGE = Math.min(1.2, Math.max(.5, Number(params.get('scale')) || 1));   // for players that misreport their size
+  const STILL = params.get('still') === '1';                                      // one scene, no chrome, for rendering files
+  const LOOP = location.hash === '#loop' || params.has('loop') || /\/loop(\.html)?\/?$/.test(location.pathname);   // TV mode
+
+  const root = document.getElementById('root');
+  const SVG = 'http://www.w3.org/2000/svg';
+
+  function el(tag, props, ...kids) {
+    const node = document.createElement(tag);
+    if (props) {
+      for (const [k, v] of Object.entries(props)) {
+        if (v === null || v === undefined || v === false) continue;
+        if (k === 'class') node.className = v;
+        else if (k === 'text') node.textContent = v;
+        else if (k === 'style') node.style.cssText = v;
+        else if (k.startsWith('on')) node.addEventListener(k.slice(2), v);
+        else node.setAttribute(k, v === true ? '' : v);
+      }
+    }
+    for (const kid of kids.flat(Infinity)) {
+      if (kid === null || kid === undefined || kid === false) continue;
+      node.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    }
+    return node;
+  }
+  function svg(tag, attrs) {
+    const node = document.createElementNS(SVG, tag);
+    for (const [k, v] of Object.entries(attrs || {})) node.setAttribute(k, v);
+    return node;
+  }
+
+  const WORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve'];
+  const countWord = (n) => (n >= 0 && n < WORDS.length ? WORDS[n] : String(n));
+  const plural = (n, one, many) => (n === 1 ? one : many);
+  const initials = (name) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('');
+
+  // ---------------------------------------------------------------------
+  // What the room looks like right now
+  // ---------------------------------------------------------------------
+  const S = {
+    live: DEMO ? params.get('live') === '1' : true,   // live counts and the "now" mark
+    room: DEMO ? { players: 87, tickets_earned: 412 } : null,
+    theater: false, chrome: false, at: null,
+    step: 0, sp: 0, kd: 0, timer: null, hideTimer: null, poll: null,
+  };
+
+  const raffleTime = () => { const r = EVENT.agenda.find((a) => /raffle/i.test(a.label)); return r ? r.time : ''; };
+
+  // Which line of the schedule is on now. Evening times, so 6:00 means 6:00 pm.
+  function nowIndex() {
+    if (params.get('now') !== null) { const n = Number(params.get('now')); return Number.isInteger(n) ? n : -1; }
+    if (!S.live) return -1;
+    if (DEMO) return 5;
+    try {
+      const parts = new Intl.DateTimeFormat('en-CA', { timeZone: CONFIG.timeZone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+      const get = (t) => parts.find((p) => p.type === t).value;
+      if (`${get('year')}-${get('month')}-${get('day')}` !== CONFIG.eventDate) return -1;
+      const minutes = Number(get('hour')) * 60 + Number(get('minute'));
+      let at = -1;
+      EVENT.agenda.forEach((a, i) => {
+        const m = /^(\d{1,2}):(\d{2})$/.exec(a.time);
+        if (!m) return;
+        const start = ((Number(m[1]) % 12) + 12) * 60 + Number(m[2]);
+        if (minutes >= start) at = i;
+      });
+      return at;
+    } catch (e) { return -1; }
+  }
+
+  async function pollRoom() {
+    try {
+      const headers = { 'content-type': 'application/json' };
+      if (CONFIG.apiKey) { headers.apikey = CONFIG.apiKey; headers.authorization = 'Bearer ' + CONFIG.apiKey; }
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 8000);
+      const res = await fetch(CONFIG.apiBase + '/rpc/sn_room', { method: 'POST', cache: 'no-store', headers, signal: ctrl.signal, body: JSON.stringify({ p_event: CONFIG.eventId }) });
+      clearTimeout(timer);
+      if (!res.ok) return;
+      const body = await res.json();
+      if (!body || !body.ok) return;
+      const first = !S.room;
+      S.room = body.room;
+      const e = body.event || {};
+      if (e.title) EVENT.title = e.title;
+      if (Array.isArray(e.agenda) && e.agenda.length) EVENT.agenda = e.agenda;
+      if (e.question_count) EVENT.questionCount = e.question_count;
+      if (Number.isInteger(e.base_tickets)) EVENT.baseTickets = e.base_tickets;
+      if (Number.isInteger(e.tickets_per_correct)) EVENT.ticketsPerCorrect = e.tickets_per_correct;
+      if (first) { if (S.theater && S.at) showScene(S.at[0], S.at[1]); else if (!S.theater) render(); }
+    } catch (e) { /* keep showing the last numbers we had */ }
+  }
+
+  // ---------------------------------------------------------------------
+  // Drawing a stage
+  // ---------------------------------------------------------------------
+
+  // The ticket outline: a rounded box with a bite out of the top and bottom edge
+  // where the stub tears off, and the dashed tear line between them.
+  function shape(mainW) {
+    const x0 = 40; const y0 = 40; const w = 1840; const h = 1000; const r = 36; const nr = 26; const nx = x0 + mainW;
+    const d = [
+      `M${x0 + r} ${y0}`, `H${nx - nr}`, `A${nr} ${nr} 0 0 0 ${nx + nr} ${y0}`, `H${x0 + w - r}`,
+      `A${r} ${r} 0 0 1 ${x0 + w} ${y0 + r}`, `V${y0 + h - r}`, `A${r} ${r} 0 0 1 ${x0 + w - r} ${y0 + h}`,
+      `H${nx + nr}`, `A${nr} ${nr} 0 0 0 ${nx - nr} ${y0 + h}`, `H${x0 + r}`,
+      `A${r} ${r} 0 0 1 ${x0} ${y0 + h - r}`, `V${y0 + r}`, `A${r} ${r} 0 0 1 ${x0 + r} ${y0}`, 'Z',
+    ].join(' ');
+    const s = svg('svg', { class: 'shape', viewBox: '0 0 1920 1080', 'aria-hidden': 'true' });
+    const grad = svg('linearGradient', { id: 'tkt', x1: '0', y1: '0', x2: '1', y2: '1' });
+    grad.append(svg('stop', { offset: '0', 'stop-color': '#17212C' }), svg('stop', { offset: '1', 'stop-color': '#0C1218' }));
+    const defs = svg('defs');
+    defs.append(grad);
+    s.append(
+      defs,
+      svg('path', { d, fill: 'url(#tkt)', stroke: 'rgba(245,247,250,.22)', 'stroke-width': '2.5' }),
+      svg('line', { x1: nx, y1: y0 + nr + 22, x2: nx, y2: y0 + h - nr - 22, stroke: 'rgba(245,247,250,.3)', 'stroke-width': '3', 'stroke-dasharray': '13 13', 'stroke-linecap': 'round' }));
+    return s;
+  }
+
+  function qr(cls) {
+    const rows = CONFIG.joinQr;
+    const n = rows.length;
+    const box = el('div', { class: 'qr ' + cls, role: 'img', 'aria-label': 'Code to scan to play' });
+    if (!n) return box;
+    let d = '';
+    for (let r = 0; r < n; r += 1) {
+      let c = 0;
+      while (c < n) {
+        if (rows[r][c] !== '1') { c += 1; continue; }
+        let run = 1;
+        while (c + run < n && rows[r][c + run] === '1') run += 1;
+        d += `M${c} ${r}h${run}v1h-${run}z`;
+        c += run;
+      }
+    }
+    const s = svg('svg', { viewBox: `0 0 ${n} ${n}`, 'shape-rendering': 'crispEdges' });
+    s.append(svg('path', { d, fill: '#0E161E' }));
+    box.append(s);
+    return box;
+  }
+
+  function star() {
+    const s = svg('svg', { viewBox: '0 0 24 24', 'aria-hidden': 'true' });
+    s.append(svg('path', { d: 'M12 2.6l2.8 6 6.5.8-4.8 4.5 1.3 6.5L12 17.2 6.2 20.4l1.3-6.5L2.7 9.4l6.5-.8z', fill: 'currentColor' }));
+    return s;
+  }
+
+  function rulesLine() {
+    const n = EVENT.questionCount; const per = EVENT.ticketsPerCorrect; const base = EVENT.baseTickets;
+    const head = `${countWord(n)} ${plural(n, 'question', 'questions')} on your phone.`;
+    if (per === 1 && base === 1) return `${head} Every right answer is a raffle ticket, and you get one just for playing.`;
+    const each = per > 0 ? ` Every right answer is ${per === 1 ? 'a raffle ticket' : per + ' raffle tickets'}` : '';
+    const start = base > 0 ? `${each ? ', and you get ' : ' You get '}${base === 1 ? 'one' : base} just for playing` : '';
+    return `${head}${each}${start}${each || start ? '.' : ''}`;
+  }
+
+  function topBar(side) {
+    return el('header', { class: 'top' },
+      el('div', { class: 'brand' }, el('span', { text: EVENT.title }), DEMO && el('span', { class: 'tag', text: 'Demo' })),
+      side && el('div', { class: 'top-side', text: side }));
+  }
+
+  function liveRows() {
+    if (!S.live || !S.room) return null;
+    return [
+      el('div', null, el('b', { text: String(S.room.players) }), el('span', { text: 'playing' })),
+      el('div', null, el('b', { text: String(S.room.tickets_earned) }), el('span', { text: plural(S.room.tickets_earned, 'ticket earned', 'tickets earned') })),
+    ];
+  }
+
+  function stubColumn(left) {
+    const live = liveRows();
+    const raffle = raffleTime();
+    return el('aside', { class: 'stubcol' + (live ? ' has-live' : ''), style: `left:${left}px` },
+      el('p', { class: 'sc-title', text: 'Play for raffle tickets' }),
+      qr('sc-qr'),
+      el('p', { class: 'sc-how', text: 'Scan with your phone' }),
+      live && el('div', { class: 'sc-live' }, live),
+      raffle && el('div', { class: 'sc-rule' }),
+      raffle && el('div', { class: 'sc-raffle' }, el('span', { text: 'Raffle at' }), el('b', { text: raffle })));
+  }
+
+  const scenes = {
+    play() {
+      const mainW = 1050;
+      const raffle = raffleTime();
+      const live = liveRows();
+      const stubs = Array.from({ length: Math.max(1, Math.min(14, EVENT.questionCount)) }, (_, i) =>
+        el('span', { class: 'stub' + (i === 0 ? ' is-gold' : i < 8 ? ' will-fill' : ''), style: `--n:${i}` }));
+      return [
+        shape(mainW),
+        el('div', { class: 'main', style: `width:${mainW}px` },
+          topBar(null),
+          el('div', { class: 'scene' }, el('div', { class: 'pl' },
+            el('h1', { class: 'pl-title' }, 'Play for', el('br'), 'raffle tickets'),
+            el('p', { class: 'pl-lede', text: rulesLine() }),
+            el('div', { class: 'pl-strip', 'aria-hidden': 'true' }, stubs),
+            raffle && el('p', { class: 'pl-foot' }, 'Raffle at ', el('b', { text: raffle }), '. Show your ticket at the raffle table.')))),
+        el('aside', { class: 'stubcol is-big', style: `left:${40 + mainW}px` },
+          qr('pq-qr'),
+          el('p', { class: 'pq-how', text: 'Scan with your phone' }),
+          live && el('div', { class: 'pq-live' }, live)),
+      ];
+    },
+
+    tonight() {
+      const mainW = 1400;
+      const at = nowIndex();
+      return [
+        shape(mainW),
+        el('div', { class: 'main', style: `width:${mainW}px` },
+          topBar(EVENT.dateLine),
+          el('div', { class: 'scene' }, el('div', null,
+            el('h1', { class: 'tn-title', text: 'Tonight' }),
+            el('ol', { class: 'tn-list' }, EVENT.agenda.slice(0, 9).map((a, i) => {
+              const state = at === -1 ? '' : i < at ? ' is-past' : i === at ? ' is-now' : '';
+              return el('li', { class: 'tn-row' + state },
+                el('span', { class: 'stub' + (i === at ? ' is-gold' : at !== -1 && i < at ? ' is-done' : '') }),
+                el('span', { class: 'tn-time', text: a.time }),
+                el('span', { class: 'tn-label', text: a.label }),
+                i === at && el('span', { class: 'tn-now', text: 'Now' }));
+            }))))),
+        stubColumn(40 + mainW),
+      ];
+    },
+
+    spotlight(i) {
+      const mainW = 1400;
+      const list = CONTENT.spotlight;
+      const p = list[i % list.length];
+      const total = Math.max(CONTENT.headcount, list.length);
+      const number = (i % total) + 1;
+      return [
+        shape(mainW),
+        el('div', { class: 'main', style: `width:${mainW}px` },
+          topBar(`${number} of ${total}`),
+          el('div', { class: 'scene' }, el('div', { class: 'sp' },
+            el('div', { class: 'sp-photo' },
+              p.photo ? el('img', { src: p.photo, alt: '' }) : el('span', { class: 'sp-mono', 'aria-hidden': 'true', text: initials(p.name) }),
+              p.honoree && el('span', { class: 'sp-star' }, star())),
+            el('div', { class: 'sp-text' },
+              el('h1', { class: 'sp-name', text: p.name }),
+              el('p', { class: 'sp-dept', text: p.dept }),
+              el('p', { class: 'sp-line', text: p.line }),
+              p.honoree && el('p', { class: 'sp-honor', text: `Employee of the Month, ${p.honoree}` }))))),
+        stubColumn(40 + mainW),
+      ];
+    },
+
+    kudos(i) {
+      const mainW = 1400;
+      const k = CONTENT.kudos[i % CONTENT.kudos.length];
+      return [
+        shape(mainW),
+        el('div', { class: 'main', style: `width:${mainW}px` },
+          topBar('Kudos from the team'),
+          el('div', { class: 'scene' }, el('div', { class: 'kd' },
+            el('div', { class: 'kd-back', 'aria-hidden': 'true' }),
+            el('div', { class: 'kd-note' },
+              el('div', { class: 'kd-head', text: 'Thank you' }),
+              el('p', { class: 'kd-quote', text: k.text }),
+              el('div', { class: 'kd-cut' }),
+              el('div', { class: 'kd-sign' },
+                el('p', { class: 'kd-for' }, `For ${k.to}`, k.toDept && el('span', { text: `, ${k.toDept}` })),
+                el('p', { class: 'kd-from', text: `from ${k.from}${k.fromDept ? ', ' + k.fromDept : ''}` })))))),
+        stubColumn(40 + mainW),
+      ];
+    },
+  };
+
+  function stage(kind, index, moving) {
+    return el('div', { class: 'stage' + (moving ? ' is-in' : ''), 'data-scene': kind }, scenes[kind](index || 0));
+  }
+
+  // ---------------------------------------------------------------------
+  // The page of stills, and the loop
+  // ---------------------------------------------------------------------
+  const SHOW = [
+    ['play', 0, 'The invitation', 'Comes round about once a minute, with a code large enough to scan from across the room.'],
+    ['tonight', 0, 'Tonight', 'The schedule. Live, it marks what is on now. As files, it is a plain list, or one still per block.'],
+    ['spotlight', 0, 'Spotlight', 'Everyone gets a turn, about ten seconds each. Photos replace the initials.'],
+    ['spotlight', 1, 'Spotlight, after the reveal', 'Honorees carry a star once their names are out.'],
+    ['kudos', 0, 'Kudos', 'Thanks from coworkers, collected ahead of time. Live, new ones can arrive during the party.'],
+  ];
+  const ORDER = ['play', 'tonight', 'spotlight', 'spotlight', 'kudos', 'spotlight', 'spotlight', 'kudos'];
+  const HOLD = { play: 14000, tonight: 12000, spotlight: 9000, kudos: 11000 };
+
+  // A still for the page of screens. The caption beside it says what it shows.
+  function preview(kind, index) {
+    const node = stage(kind, index, false);
+    node.setAttribute('aria-hidden', 'true');
+    return node;
+  }
+
+  function fit(holder, node, width, height) {
+    const k = Math.min(width / 1920, height / 1080) * NUDGE;
+    node.style.transform = `scale(${k})`;
+    holder.style.width = `${1920 * k}px`;
+    holder.style.height = `${1080 * k}px`;
+    return k;
+  }
+
+  function fitFrames() {
+    for (const frame of root.querySelectorAll('.frame')) {
+      const node = frame.firstElementChild;
+      if (node) node.style.transform = `scale(${frame.clientWidth / 1920})`;
+    }
+  }
+
+  function viewGallery() {
+    const frames = SHOW.map(([kind, index, name, note]) => el('li', null,
+      el('div', { class: 'frame' }, preview(kind, index),
+        el('button', { class: 'frame-hit', type: 'button', 'aria-label': `Play the loop, starting at ${name}`, onclick: () => openTheater(kind, index) })),
+      el('p', { class: 'cap' }, el('b', { text: name }), el('span', { text: note }))));
+    return el('main', { class: 'gallery' },
+      el('h1', { class: 'g-title', text: `${EVENT.title} TV screens` }),
+      el('p', { class: 'g-sub', text: 'What the suite TVs show, at their real shape. The people, their lines and the kudos are samples.' }),
+      el('div', { class: 'g-tools' },
+        el('button', { class: 'primary', type: 'button', onclick: () => openTheater('play', 0), text: 'Play the loop' }),
+        DEMO && el('div', { class: 'seg', role: 'group', 'aria-label': 'Version' },
+          el('button', { type: 'button', 'aria-pressed': String(!S.live), onclick: () => { S.live = false; render(); }, text: 'As files' }),
+          el('button', { type: 'button', 'aria-pressed': String(S.live), onclick: () => { S.live = true; render(); }, text: 'Live' })),
+        CAN_PRINT && el('button', { class: 'quiet', type: 'button', onclick: () => window.print(), text: 'Print or save as PDF' })),
+      DEMO && el('p', { class: 'g-mode', text: S.live
+        ? 'Live: the screens count players and tickets as they happen, and mark what is on now. Needs the stadium to run a web page.'
+        : 'As files: stills and loops handed to the stadium ahead of time. This is the plan of record.' }),
+      el('ol', { class: 'g-list' }, frames),
+      el('p', { class: 'g-foot', text: DEMO
+        ? 'The code on these screens opens the phone demo. On the night it opens the real game.'
+        : 'On a TV, add #loop to the end of this address.' }));
+  }
+
+  function nextScene() {
+    const kind = ORDER[S.step % ORDER.length];
+    S.step += 1;
+    let index = 0;
+    if (kind === 'spotlight') { index = S.sp; S.sp += 1; }
+    if (kind === 'kudos') { index = S.kd; S.kd += 1; }
+    return [kind, index];
+  }
+
+  function showScene(kind, index) {
+    const holder = root.querySelector('.stage-holder');
+    if (!holder) return;
+    S.at = [kind, index];
+    if (DEMO && S.live && S.room) {              // the demo room fills up slowly
+      const more = S.room.players < CONTENT.headcount ? Math.floor(Math.random() * 3) : 0;
+      S.room = { players: S.room.players + more, tickets_earned: S.room.tickets_earned + more + Math.floor(Math.random() * 9) };
+    }
+    const fresh = stage(kind, index, !REDUCED);
+    fresh.style.transform = holder.firstElementChild ? holder.firstElementChild.style.transform : '';
+    const old = holder.firstElementChild;
+    holder.append(fresh);
+    if (!old) fitTheater();
+    if (old) setTimeout(() => old.remove(), REDUCED ? 0 : 750);
+    clearTimeout(S.timer);
+    S.timer = setTimeout(() => showScene(...nextScene()), HOLD[kind]);
+  }
+
+  function fitTheater() {
+    const box = root.querySelector('.theater');
+    const holder = root.querySelector('.stage-holder');
+    if (!box || !holder) return;
+    let k = 1;
+    for (const node of holder.children) k = fit(holder, node, box.clientWidth, box.clientHeight);
+    holder.style.left = `${(box.clientWidth - 1920 * k) / 2}px`;
+    holder.style.top = `${(box.clientHeight - 1080 * k) / 2}px`;
+    const turn = root.querySelector('.t-turn');
+    if (turn) turn.hidden = !(box.clientHeight > box.clientWidth * 1.1);
+  }
+
+  function showChrome() {
+    const back = root.querySelector('.t-back');
+    if (!back) return;
+    back.classList.remove('is-hidden');
+    clearTimeout(S.hideTimer);
+    S.hideTimer = setTimeout(() => back.classList.add('is-hidden'), 3200);
+  }
+
+  function openTheater(kind, index) {
+    S.theater = true; S.chrome = true;
+    const at = ORDER.indexOf(kind);
+    S.step = at === -1 ? 0 : at + 1;
+    S.sp = kind === 'spotlight' ? index + 1 : 0;
+    S.kd = kind === 'kudos' ? index + 1 : 0;
+    render();
+    showScene(kind, index);
+    showChrome();
+    try { const go = document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); if (go && go.catch) go.catch(() => {}); } catch (e) { /* stay in the page */ }
+  }
+
+  function closeTheater() {
+    clearTimeout(S.timer); clearTimeout(S.hideTimer);
+    S.theater = false;
+    try { if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {}); } catch (e) { /* already out */ }
+    render();
+  }
+
+  function viewTheater() {
+    return el('div', { class: 'theater' + (S.chrome ? '' : ' is-tv'), onclick: showChrome, onmousemove: showChrome },
+      S.chrome && el('button', { class: 't-back', type: 'button', onclick: (ev) => { ev.stopPropagation(); closeTheater(); }, text: 'All screens' }),
+      el('div', { class: 'stage-holder' }),
+      S.chrome && el('p', { class: 't-turn', hidden: true, text: 'Turn your phone sideways for the full screen.' }));
+  }
+
+  function render() {
+    if (STILL) {
+      const kind = scenes[params.get('scene')] ? params.get('scene') : 'play';
+      const node = stage(kind, Number(params.get('i')) || 0, false);
+      root.replaceChildren(node);
+      return;
+    }
+    root.replaceChildren(S.theater ? viewTheater() : viewGallery());
+    if (!S.theater) fitFrames();
+  }
+
+  window.addEventListener('resize', () => { if (STILL) return; if (S.theater) fitTheater(); else fitFrames(); });
+  window.addEventListener('hashchange', () => { if (location.hash === '#loop' && !S.theater) startTv(); });
+
+  // On a TV: no buttons, no page, just the loop.
+  function startTv() {
+    S.theater = true; S.chrome = false; S.step = 1; S.sp = 0; S.kd = 0;
+    render();
+    showScene('play', 0);
+  }
+
+  if (!DEMO && !STILL) { pollRoom(); S.poll = setInterval(pollRoom, 15000); }
+  if (!STILL && LOOP) startTv(); else render();
+})();
+</script>
+</body>
+</html>
