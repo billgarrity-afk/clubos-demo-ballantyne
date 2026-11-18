@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Staff Night screen test</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;height:100%;background:#06090C;overflow:hidden}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;color:#F5F7FA;font-family:"DM Sans",Arial,sans-serif;-webkit-transform-origin:0 0;transform-origin:0 0}
+#stage svg{position:absolute;left:0;top:0}
+.c{position:absolute;width:70px;height:70px;border:0 solid #0085CA}
+.d{font-family:"Cormorant Garamond",Georgia,serif}
+#main{position:absolute;left:120px;top:96px;width:1240px;height:888px}
+#stub{position:absolute;left:1440px;top:96px;width:440px;height:888px;text-align:center}
+.card{position:absolute;left:0;top:150px;width:1240px;display:none}
+.pill{display:inline-block;margin-left:22px;padding:6px 20px;border:2px solid #0085CA;border-radius:40px;font-family:"DM Sans",Arial,sans-serif;font-size:24px;font-weight:500;color:#4DB1EA;vertical-align:8px}
+.big{font-size:150px;font-weight:700;line-height:1;margin:0;white-space:nowrap}
+.lede{font-size:42px;line-height:1.3;margin:36px 0 0;max-width:1100px}
+.row{font-size:26px;line-height:1.35;margin:14px 28px 0;color:#BFC0BF}
+.row b{display:block;color:#F5F7FA;font-weight:500;font-size:30px}
+#pb{position:fixed;left:50%;bottom:22px;width:260px;margin-left:-130px;display:none;padding:12px 0;border:2px solid #0085CA;border-radius:40px;background:#101820;color:#F5F7FA;font-family:"DM Sans",Arial,sans-serif;font-size:18px;font-weight:500;cursor:pointer}
+@page{size:1920px 1080px;margin:0}
+@media print{#pb{display:none!important}html,body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<div id="stage">
+<svg width="1920" height="1080" viewBox="0 0 1920 1080"><path d="M74 40H1414A26 26 0 0 0 1466 40H1846A34 34 0 0 1 1880 74V1006A34 34 0 0 1 1846 1040H1466A26 26 0 0 0 1414 1040H74A34 34 0 0 1 40 1006V74A34 34 0 0 1 74 40Z" fill="#101820" stroke="#3A4654" stroke-width="2.5"/><line x1="1440" y1="92" x2="1440" y2="988" stroke="#4A5766" stroke-width="3" stroke-dasharray="12 12"/></svg>
+<div class="c" style="left:8px;top:8px;border-left-width:8px;border-top-width:8px"></div>
+<div class="c" style="right:8px;top:8px;border-right-width:8px;border-top-width:8px"></div>
+<div class="c" style="left:8px;bottom:8px;border-left-width:8px;border-bottom-width:8px"></div>
+<div class="c" style="right:8px;bottom:8px;border-right-width:8px;border-bottom-width:8px"></div>
+<div id="main">
+<p class="d" style="font-size:52px;font-weight:600;margin:0">Staff Night<span class="pill">Test screen</span></p>
+<div class="card" id="k0"><p class="d big"><span id="b0">Screen test</span></p><p class="lede">If this fills the TV, all four blue corners show and the clock keeps moving, the page is working.</p><p class="lede" style="color:#BFC0BF">A photo of this screen tells us the rest.</p></div>
+<div class="card" id="k1"><p class="d big"><span id="b1">Avery Coleman</span></p><p class="lede" style="color:#0085CA;font-weight:600">Golf Shop</p><p class="d lede" style="font-style:italic;font-size:56px">Has never once lost a head cover. Has found forty-one.</p></div>
+<div class="card" id="k2"><p class="d big"><span id="b2">Tonight</span></p><p class="lede"><span style="color:#0085CA">6:00</span> &nbsp; Doors and check-in<br><span style="color:#0085CA">7:25</span> &nbsp; Staff photos and awards<br><span style="color:#0085CA">8:30</span> &nbsp; Raffle</p></div>
+<p id="ua" style="position:absolute;left:0;bottom:0;width:1240px;margin:0;font-size:22px;color:#BFC0BF"></p>
+</div>
+<div id="stub">
+<p class="d" style="font-size:46px;font-weight:600;margin:0">Screen check</p>
+<p class="d" style="font-size:118px;font-weight:700;color:#0085CA;margin:36px 0 0;line-height:1;white-space:nowrap"><span id="clock">--:--:--</span></p>
+<p class="row" style="margin-top:6px;margin-bottom:22px">the time this TV thinks it is</p>
+<p class="row"><b id="up">0:00:00</b>running without a reload</p>
+<p class="row"><b id="win">-</b>window size the TV reports</p>
+<p class="row"><b id="net">checking</b>connection to the page</p>
+<p class="row"><b id="font">checking</b>event typefaces</p>
+<p class="row"><b id="feat">-</b>what this browser supports</p>
+</div>
+</div>
+<button id="pb" type="button">Print or save as PDF</button>
+<script>
+// A screen check for the stadium's suite TV system. Written in old-style script on purpose,
+// so it runs on older players and can report what they support.
+(function () {
+  var stage = document.getElementById('stage'), t0 = new Date().getTime(), n = 0;
+  function $(id) { return document.getElementById(id); }
+  function two(v) { return (v < 10 ? '0' : '') + v; }
+  function clock(d) { return two(d.getHours()) + ':' + two(d.getMinutes()) + ':' + two(d.getSeconds()); }
+  function fit() {
+    var w = window.innerWidth, h = window.innerHeight, s = Math.min(w / 1920, h / 1080);
+    var tr = 'translate(' + Math.round((w - 1920 * s) / 2) + 'px,' + Math.round((h - 1080 * s) / 2) + 'px) scale(' + s + ')';
+    stage.style.webkitTransform = tr; stage.style.transform = tr;
+    var dpr = window.devicePixelRatio;
+    $('win').textContent = w + ' x ' + h + (dpr && dpr !== 1 ? ' at ' + (Math.round(dpr * 100) / 100) + 'x' : '');
+  }
+  // Width of a line of text in a given font stack. If naming the event typeface changes the
+  // width, the typeface really arrived. (Asking the browser directly can say yes when it did not.)
+  function wide(stack) {
+    var s = document.createElement('span');
+    s.style.cssText = 'position:absolute;left:-9999px;top:0;font-size:72px;white-space:nowrap;font-family:' + stack;
+    s.appendChild(document.createTextNode('Staff Night mmmiiiWWW 0123456789'));
+    document.body.appendChild(s);
+    var w = s.offsetWidth; document.body.removeChild(s); return w;
+  }
+  function has(name) {
+    return wide('"' + name + '",monospace') !== wide('monospace') && wide('"' + name + '",serif') !== wide('serif');
+  }
+  function tick() {
+    var d = new Date(), u = Math.floor((d.getTime() - t0) / 1000);
+    $('clock').textContent = clock(d);
+    $('up').textContent = Math.floor(u / 3600) + ':' + two(Math.floor(u / 60) % 60) + ':' + two(u % 60);
+  }
+  function show() {
+    for (var i = 0; i < 3; i++) $('k' + i).style.display = i === n % 3 ? 'block' : 'none';
+    snug('b' + n % 3, 1200, 150);
+    n++;
+  }
+  function ping() {
+    var x = new XMLHttpRequest();
+    x.onreadystatechange = function () {
+      if (x.readyState === 4) $('net').textContent = (x.status === 200 ? 'OK' : 'No answer') + ' at ' + clock(new Date());
+    };
+    try { x.open('GET', '?check=' + new Date().getTime(), true); x.send(); } catch (e) { $('net').textContent = 'Blocked'; }
+  }
+  // If the event typefaces do not arrive, the TV's own are wider. Shrink a line until it fits.
+  function snug(id, max, top) {
+    var e = $(id), box = e.parentNode, size = top;
+    box.style.fontSize = size + 'px';
+    while (e.offsetWidth > max && size > 48) { size -= 4; box.style.fontSize = size + 'px'; }
+  }
+  function fonts() {
+    var a = has('Cormorant Garamond'), b = has('DM Sans');
+    $('font').textContent = a && b ? 'Loaded' : a || b ? 'Partly loaded' : 'Not loaded';
+    snug('clock', 400, 118);
+  }
+  function feats() {
+    var modern = false, list = [];
+    try { new Function('var a = () => `x`; const b = 1;'); modern = true; } catch (e) {}
+    function css(p, v) { return !!(window.CSS && CSS.supports && CSS.supports(p, v)); }
+    function add(ok, name) { list.push((ok ? '' : 'no ') + name); }
+    add(modern, 'modern script'); add(!!window.fetch, 'fetch'); add(css('display', 'grid'), 'grid');
+    add(css('inset', '0'), 'inset'); add(css('aspect-ratio', '1'), 'aspect-ratio');
+    $('feat').textContent = list.join(', ');
+  }
+  // The print button only appears when someone moves a mouse or touches the screen,
+  // so a TV on its own never shows it. It stays away when the page sits inside another page.
+  var pb = $('pb'), hide = 0, framed = false;
+  try { framed = window.self !== window.top; } catch (e) { framed = true; }
+  function wake() {
+    if (framed || !window.print) return;
+    pb.style.display = 'block'; clearTimeout(hide);
+    hide = setTimeout(function () { pb.style.display = 'none'; }, 3500);
+  }
+  pb.onclick = function () { window.print(); };
+  document.onmousemove = wake; document.ontouchstart = wake;
+  window.onbeforeprint = function () { stage.style.webkitTransform = 'none'; stage.style.transform = 'none'; };
+  window.onafterprint = fit;
+  $('ua').textContent = navigator.userAgent;
+  fit(); tick(); show(); ping(); feats(); fonts();
+  window.onresize = fit;
+  setInterval(tick, 1000); setInterval(show, 10000); setInterval(ping, 30000); setInterval(fonts, 5000);
+})();
+</script>
+</body>
+</html>
